@@ -205,6 +205,9 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 		if (!className && oldTags.includes(key)) {
 			className = key.startsWith('h') ? 'container mt-4 mb-3 fw-bold' : 'container py-1'
 		}
+		if (!className && key === 'table') {
+			className = 'table table-striped table-hover mt-3 w-100'
+		}
 
 		const props = { key: index }
 		if (className) props.className = className
@@ -228,12 +231,18 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 				key,
 				props,
 				value.map((v, i) => {
-					// Handle string items with HTML entities inside tag children
-					if (typeof v === 'string' && v.includes('&')) {
-						return createElement('span', {
-							key: `${index}-${i}`,
-							dangerouslySetInnerHTML: { __html: v },
-						})
+					// Handle string items explicitly inside tag children to avoid <p> wrapper
+					if (typeof v === 'string') {
+						if (getBlockMap()[v] || registry[v] || v.startsWith('App.')) {
+							return renderItem(v, `${index}-${i}`, sharedProps, registry)
+						}
+						if (v.includes('&')) {
+							return createElement('span', {
+								key: `${index}-${i}`,
+								dangerouslySetInnerHTML: { __html: v },
+							})
+						}
+						return v
 					}
 					return renderItem(v, `${index}-${i}`, sharedProps, registry)
 				}),

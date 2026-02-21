@@ -73,7 +73,7 @@ export default function Playground({ db }) {
 		>
 			{/* Sidebar Navigation */}
 			<nav
-				className="col-md-3 col-lg-2 bg-white shadow-sm sidebar sticky-top"
+				className="col-md-3 col-lg-2 bg-white shadow-sm sidebar sticky-top d-none d-md-block"
 				style={{ top: 0, height: '100vh', overflowY: 'auto' }}
 			>
 				<div className="p-4 border-bottom">
@@ -199,7 +199,7 @@ export default function Playground({ db }) {
 						title="Blocks.Content"
 						description="Основний контент сторінки. Здатний рендерити складну та багатовимірну структуру HTML-тегів."
 						locale={locale}
-						componentUsage={`<Blocks.Content \n  page={{\n    content: [\n      { h3: "Основний контент" },\n      { p: "Тут знаходиться масив основного контенту." },\n      { hr: true },\n      { table: { $class: "table table-bordered w-100 mt-3", tbody: [{ tr: [{ td: "Ключ" }, { td: "Значення" }] }] } }\n    ]\n  }}\n/>`}
+						componentUsage={`<Blocks.Content \n  page={{\n    content: [\n      { h3: "Основний контент" },\n      { p: "Тут знаходиться масив основного контенту." },\n      { hr: true },\n      { table: { tbody: [{ tr: [{ td: "Ключ" }, { td: "Значення" }] }] } }\n    ]\n  }}\n/>`}
 						schemaPayload={{
 							$content: ['Content'],
 							content: [
@@ -208,7 +208,6 @@ export default function Playground({ db }) {
 								{ hr: true },
 								{
 									table: {
-										$class: 'table table-bordered w-100 mt-3',
 										tbody: [{ tr: [{ td: 'Ключ' }, { td: 'Значення' }] }],
 									},
 								},
@@ -223,7 +222,6 @@ export default function Playground({ db }) {
 									{ hr: true },
 									{
 										table: {
-											$class: 'table table-bordered w-100 mt-3',
 											tbody: [{ tr: [{ td: 'Ключ' }, { td: 'Значення' }] }],
 										},
 									},
@@ -304,7 +302,7 @@ export default function Playground({ db }) {
 						title="Blocks.Contract"
 						description="Кнопка для друку і секції регламенту з навігатором (dropdown)."
 						locale={locale}
-						componentUsage={`<Blocks.Contract \\n  locale={locale}\\n  page={{\\n    $pageNavigator: { text: "Навігація по контракту" },\\n    contract: [\\n      { id: "section-1", title: "1. Загальні положення", content: [{ p: "Текст положення 1." }] },\\n      { id: "section-2", title: "2. Права та обов'язки", content: [{ p: "Текст обов'язків." }] }\\n    ]\\n  }}\\n/>`}
+						componentUsage={`<Blocks.Contract \n  locale={locale}\n  page={{\n    $pageNavigator: { text: "Навігація по контракту" },\n    contract: [\n      { id: "section-1", title: "1. Загальні положення", content: [{ p: "Текст положення 1." }] },\n      { id: "section-2", title: "2. Права та обов'язки", content: [{ p: "Текст обов'язків." }] }\n    ]\n  }}\n/>`}
 						schemaPayload={{
 							$content: ['Contract'],
 							$pageNavigator: { text: 'Навігація по контракту' },
