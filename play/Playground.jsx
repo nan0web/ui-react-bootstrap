@@ -2,67 +2,38 @@ import React, { useState } from 'react'
 import { Renderer, Blocks } from '../src/index.jsx'
 import yaml from 'js-yaml'
 
-function BlockShowcase({
-	title,
-	description,
-	id,
-	componentUsage,
-	schemaPayload,
-	children,
-	locale,
-}) {
-	const schemaYaml = yaml.dump(schemaPayload, { indent: 2, noRefs: true, flowLevel: -1 })
-
-	// Add syntax highlighting placeholder mapping if needed
+function Example({ label, children, code, isYaml }) {
+	const formatted = isYaml ? yaml.dump(code, { indent: 2, noRefs: true, flowLevel: -1 }) : code
 	return (
-		<div id={id} className="container mt-5 mb-5 pb-5 border-bottom px-0 px-md-3">
-			<h2 className="mb-2 text-primary">📦 {title}</h2>
-			{description && <p className="text-muted mb-4">{description}</p>}
-
-			<div className="row g-4">
-				{/* React Component Example */}
-				<div className="col-lg-6">
-					<div className="card h-100 shadow-sm border-0">
-						<div className="card-header bg-light border-0 py-3">
-							<span className="badge bg-primary fs-6 mb-2">React Component</span>
-							<p className="mb-0 small text-muted">
-								Використання безпосередньо як React компонент (props).
-							</p>
-						</div>
-						<div className="card-body bg-white border-top">{children}</div>
-						<div className="card-footer bg-dark border-0 p-3">
-							<pre className="mb-0 text-white" style={{ fontSize: '0.85rem', overflowX: 'auto' }}>
-								{componentUsage}
-							</pre>
-						</div>
-					</div>
-				</div>
-
-				{/* YAML Schema Example */}
-				<div className="col-lg-6">
-					<div className="card h-100 shadow-sm border-0">
-						<div className="card-header bg-light border-0 py-3">
-							<span className="badge bg-success fs-6 mb-2">Model as Schema</span>
-							<p className="mb-0 small text-muted">Використання через універсальний YAML-шаблон.</p>
-						</div>
-						<div className="card-body bg-white border-top">
-							<Renderer page={schemaPayload} locale={locale} />
-						</div>
-						<div className="card-footer bg-dark border-0 p-3">
-							<pre className="mb-0 text-white" style={{ fontSize: '0.85rem', overflowX: 'auto' }}>
-								{schemaYaml}
-							</pre>
-						</div>
-					</div>
+		<div className="mb-4">
+			{label && <h6 className="text-muted text-uppercase small fw-semibold mb-2">{label}</h6>}
+			<div className="card border-0 shadow-sm">
+				<div className="card-body bg-white">{children}</div>
+				<div className="card-footer bg-dark border-0 p-3">
+					<pre
+						className="mb-0 text-white"
+						style={{ fontSize: '0.8rem', overflowX: 'auto', whiteSpace: 'pre-wrap' }}
+					>
+						{formatted}
+					</pre>
 				</div>
 			</div>
 		</div>
 	)
 }
 
+function BlockSection({ id, title, description, children }) {
+	return (
+		<div id={id} className="mb-5 pb-4 border-bottom">
+			<h2 className="mb-2 text-primary">📦 {title}</h2>
+			{description && <p className="text-muted mb-4">{description}</p>}
+			{children}
+		</div>
+	)
+}
+
 export default function Playground({ db }) {
 	const [locale, setLocale] = useState('uk')
-
 	const toggleLocale = () => setLocale((prev) => (prev === 'uk' ? 'en' : 'uk'))
 	const sharedProps = { db, locale }
 
@@ -80,7 +51,7 @@ export default function Playground({ db }) {
 	return (
 		<div
 			className="d-flex flex-column flex-md-row"
-			style={{ minHeight: '100vh', backgroundColor: '#f5f7fa', paddingBottom: '70px' }} // Padding for mobile nav
+			style={{ minHeight: '100vh', backgroundColor: '#f5f7fa', paddingBottom: '70px' }}
 		>
 			{/* Sidebar Navigation - Desktop only */}
 			<nav
@@ -92,7 +63,7 @@ export default function Playground({ db }) {
 					<p className="small text-muted mb-0 mt-1">@nan0web/ui-react-bootstrap</p>
 				</div>
 				<div className="p-3">
-					<ul className="nav flex-column gap-2">
+					<ul className="nav flex-column gap-1">
 						{blocks.map((b) => (
 							<li className="nav-item" key={b}>
 								<a
@@ -135,238 +106,580 @@ export default function Playground({ db }) {
 				{/* Top Header */}
 				<div className="bg-white shadow-sm border-bottom py-3 px-3 px-md-4 mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
 					<div>
-						<h1 className="fw-bold mb-0 h3">Універсальні Блоки: Пісочниця</h1>
+						<h1 className="fw-bold mb-0 h3">Каталог Блоків OLMUI</h1>
 						<p className="text-muted small mb-0 mt-1">
-							Всі концептуальні блоки рендеряться використовуючи <code>Renderer</code> та{' '}
-							<code>Blocks.*</code>.
+							Інтерактивна Пісочниця: <code>Renderer</code>, <code>Blocks.*</code>, Model as Schema.
 						</p>
 					</div>
-					<div>
-						<button className="btn btn-outline-primary fw-bold px-4" onClick={toggleLocale}>
-							<span className="me-2">Мова:</span>
-							{locale === 'uk' ? '🇺🇦 UK' : '🇬🇧 EN'}
-						</button>
-					</div>
+					<button className="btn btn-outline-primary fw-bold px-4" onClick={toggleLocale}>
+						{locale === 'uk' ? '🇺🇦 UK → EN' : '🇬🇧 EN → UK'}
+					</button>
 				</div>
 
 				<div className="container-fluid px-3 px-md-4 pb-5">
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  DESCRIPTION                                       */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-description"
 						title="Blocks.Description"
-						description="Підзаголовок або короткий опис сторінки."
-						locale={locale}
-						componentUsage={`<Blocks.Description \n  page={{ description: "Це короткий опис (підзаголовок)" }} \n/>`}
-						schemaPayload={{
-							$content: ['Description'],
-							description: 'Це короткий опис (підзаголовок)',
-						}}
+						description="Підзаголовок або короткий опис сторінки. Рядкове значення. Рендериться як <h2>."
 					>
-						<Blocks.Description page={{ description: 'Це короткий опис (підзаголовок)' }} />
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Простий текст"
+									code={`<Blocks.Description page={{ description: "Короткий опис сторінки" }} />`}
+								>
+									<Blocks.Description page={{ description: 'Короткий опис сторінки' }} />
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Довгий підзаголовок"
+									code={`<Blocks.Description page={{ description: "Цей блок відображає опис або підзаголовок сторінки. Він підтримує довгі описи з різними символами та &amp; HTML entities." }} />`}
+								>
+									<Blocks.Description
+										page={{
+											description:
+												'Цей блок відображає опис або підзаголовок сторінки. Він підтримує довгі описи з різними символами та HTML entities.',
+										}}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Model as Schema (YAML)"
+									isYaml
+									code={{ $content: ['Description'], description: 'Підзаголовок через YAML-схему' }}
+								>
+									<Renderer
+										page={{
+											$content: ['Description'],
+											description: 'Підзаголовок через YAML-схему',
+										}}
+										locale={locale}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Excerpt Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  EXCERPT                                           */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-excerpt"
 						title="Blocks.Excerpt"
-						description="Вступний текст сторінки, що підтримує форматування (жирний шрифт, курсив, тощо)."
-						locale={locale}
-						componentUsage={`<Blocks.Excerpt \n  locale={locale} \n  page={{\n    excerpt: [\n      { p: "Це перший абзац екстракту." },\n      { p: ["Тут є ", { b: "жирний" }, " і звичайний текст."] }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Excerpt'],
-							excerpt: [
-								{ p: 'Це перший абзац екстракту.' },
-								{ p: ['Тут є ', { b: 'жирний' }, ' і звичайний текст.'] },
-							],
-						}}
+						description="Вступний текст (excerpt). Масив nano-вузлів. Підтримує форматування через вбудований renderItem."
 					>
-						<Blocks.Excerpt
-							page={{
-								excerpt: [
-									{ p: 'Це перший абзац екстракту.' },
-									{ p: ['Тут є ', { b: 'жирний' }, ' і звичайний текст.'] },
-								],
-							}}
-							{...sharedProps}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Один абзац"
+									code={`<Blocks.Excerpt page={{\n  excerpt: [{ p: "Простий вступний абзац без форматування." }]\n}} />`}
+								>
+									<Blocks.Excerpt
+										page={{ excerpt: [{ p: 'Простий вступний абзац без форматування.' }] }}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Форматований текст (Bold, Italic, Link)"
+									code={`<Blocks.Excerpt page={{\n  excerpt: [\n    { p: ["Цей текст містить ", { b: "жирний" }, ", ", { i: "курсив" }, " та ", { a: { $href: "#", _: "посилання" } }, "."] },\n    { p: "Другий абзац для демонстрації відступів." }\n  ]\n}} />`}
+								>
+									<Blocks.Excerpt
+										page={{
+											excerpt: [
+												{
+													p: [
+														'Цей текст містить ',
+														{ b: 'жирний' },
+														', ',
+														{ i: 'курсив' },
+														' та ',
+														{ a: { $href: '#', _: 'посилання' } },
+														'.',
+													],
+												},
+												{ p: 'Другий абзац для демонстрації відступів.' },
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Model as Schema (YAML)"
+									isYaml
+									code={{
+										$content: ['Excerpt'],
+										excerpt: [
+											{ p: ['Вступний текст з ', { b: 'жирним' }, ' через YAML.'] },
+											{ p: 'Другий абзац.' },
+										],
+									}}
+								>
+									<Renderer
+										page={{
+											$content: ['Excerpt'],
+											excerpt: [
+												{ p: ['Вступний текст з ', { b: 'жирним' }, ' через YAML.'] },
+												{ p: 'Другий абзац.' },
+											],
+										}}
+										locale={locale}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Features Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  FEATURES                                          */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-features"
 						title="Blocks.Features"
-						description="Перелік переваг чи фіч з іконкою-галочкою."
-						locale={locale}
-						componentUsage={`<Blocks.Features \n  locale={locale} \n  page={{\n    features: [\n      "Абсолютна незалежність",\n      "Строга типізація (Model as Schema)",\n      { b: "Всі базові HTML-теги підтримуються" }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Features'],
-							features: [
-								'Абсолютна незалежність',
-								'Строга типізація (Model as Schema)',
-								{ b: 'Всі базові HTML-теги підтримуються' },
-							],
-						}}
+						description="Список переваг/фіч з іконками-галочками. Елементи: рядки або nano-вузли з форматуванням."
 					>
-						<Blocks.Features
-							page={{
-								features: [
-									'Абсолютна незалежність',
-									'Строга типізація (Model as Schema)',
-									{ b: 'Всі базові HTML-теги підтримуються' },
-								],
-							}}
-							{...sharedProps}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Прості рядки"
+									code={`<Blocks.Features page={{\n  features: [\n    "Безкоштовне обслуговування",\n    "Онлайн-підтримка 24/7",\n    "Без комісії за переказ"\n  ]\n}} />`}
+								>
+									<Blocks.Features
+										page={{
+											features: [
+												'Безкоштовне обслуговування',
+												'Онлайн-підтримка 24/7',
+												'Без комісії за переказ',
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="З HTML-форматуванням"
+									code={`<Blocks.Features page={{\n  features: [\n    { b: "Гарантована безпека" },\n    ["Підтримка ", { b: "двох мов" }, " (UK/EN)"],\n    { i: "Роботизований аналіз ризиків" }\n  ]\n}} />`}
+								>
+									<Blocks.Features
+										page={{
+											features: [
+												{ b: 'Гарантована безпека' },
+												['Підтримка ', { b: 'двох мов' }, ' (UK/EN)'],
+												{ i: 'Роботизований аналіз ризиків' },
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Довгий список (6 елементів)"
+									code={`<Blocks.Features page={{\n  features: [\n    "Мобільний додаток",\n    "Apple Pay / Google Pay",\n    "Безконтактні платежі",\n    "P2P перекази",\n    "Кешбек до 5%",\n    "Преміальна підтримка"\n  ]\n}} />`}
+								>
+									<Blocks.Features
+										page={{
+											features: [
+												'Мобільний додаток',
+												'Apple Pay / Google Pay',
+												'Безконтактні платежі',
+												'P2P перекази',
+												'Кешбек до 5%',
+												'Преміальна підтримка',
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Content Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  CONTENT                                           */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-content"
 						title="Blocks.Content"
-						description="Основний контент сторінки. Здатний рендерити складну та багатовимірну структуру HTML-тегів."
-						locale={locale}
-						componentUsage={`<Blocks.Content \n  locale={locale} \n  page={{\n    content: [\n      { h3: "Основний контент" },\n      { p: "Тут знаходиться масив основного контенту." },\n      { hr: true },\n      { table: { tbody: [{ tr: [{ td: "Ключ" }, { td: "Значення" }] }] } }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Content'],
-							content: [
-								{ h3: 'Основний контент' },
-								{ p: 'Тут знаходиться масив основного контенту.' },
-								{ hr: true },
-								{
-									table: {
-										tbody: [{ tr: [{ td: 'Ключ' }, { td: 'Значення' }] }],
-									},
-								},
-							],
-						}}
+						description="Основний контент. Підтримує всі HTML-теги через nano2html: заголовки, параграфи, таблиці, списки, розділювачі."
 					>
-						<Blocks.Content
-							page={{
-								content: [
-									{ h3: 'Основний контент' },
-									{ p: 'Тут знаходиться масив основного контенту.' },
-									{ hr: true },
-									{
-										table: {
-											tbody: [{ tr: [{ td: 'Ключ' }, { td: 'Значення' }] }],
-										},
-									},
-								],
-							}}
-							{...sharedProps}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Заголовки та параграфи"
+									code={`<Blocks.Content page={{\n  content: [\n    { h3: "Заголовок H3" },\n    { p: "Параграф тексту під заголовком." },\n    { h4: "Підзаголовок H4" },\n    { p: "Ще один параграф." }\n  ]\n}} />`}
+								>
+									<Blocks.Content
+										page={{
+											content: [
+												{ h3: 'Заголовок H3' },
+												{ p: 'Параграф тексту під заголовком.' },
+												{ h4: 'Підзаголовок H4' },
+												{ p: 'Ще один параграф.' },
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Таблиця (класи додаються автоматично)"
+									code={`<Blocks.Content page={{\n  content: [\n    { table: {\n      thead: [{ tr: [{ th: "Назва" }, { th: "Тариф" }, { th: "Строк" }] }],\n      tbody: [\n        { tr: [{ td: "Ощадний" }, { td: "12%" }, { td: "12 міс" }] },\n        { tr: [{ td: "Накопичувальний" }, { td: "14%" }, { td: "24 міс" }] }\n      ]\n    }}\n  ]\n}} />`}
+								>
+									<Blocks.Content
+										page={{
+											content: [
+												{
+													table: {
+														thead: [{ tr: [{ th: 'Назва' }, { th: 'Тариф' }, { th: 'Строк' }] }],
+														tbody: [
+															{ tr: [{ td: 'Ощадний' }, { td: '12%' }, { td: '12 міс' }] },
+															{ tr: [{ td: 'Накопичувальний' }, { td: '14%' }, { td: '24 міс' }] },
+														],
+													},
+												},
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Списки (ul/ol)"
+									code={`<Blocks.Content page={{\n  content: [\n    { h5: "Вимоги до позичальника:" },\n    { ul: [\n      { li: "Вік від 21 до 65 років" },\n      { li: "Громадянство України" },\n      { li: "Стаж роботи від 6 місяців" }\n    ]},\n    { h5: "Порядок оформлення:" },\n    { ol: [\n      { li: "Подати заявку онлайн" },\n      { li: "Отримати рішення (до 30 хвилин)" },\n      { li: "Підписати договір" }\n    ]}\n  ]\n}} />`}
+								>
+									<Blocks.Content
+										page={{
+											content: [
+												{ h5: 'Вимоги до позичальника:' },
+												{
+													ul: [
+														{ li: 'Вік від 21 до 65 років' },
+														{ li: 'Громадянство України' },
+														{ li: 'Стаж роботи від 6 місяців' },
+													],
+												},
+												{ h5: 'Порядок оформлення:' },
+												{
+													ol: [
+														{ li: 'Подати заявку онлайн' },
+														{ li: 'Отримати рішення (до 30 хвилин)' },
+														{ li: 'Підписати договір' },
+													],
+												},
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Розділювач, посилання та жирний текст"
+									code={`<Blocks.Content page={{\n  content: [\n    { p: ["Зверніться до ", { a: { $href: "tel:+380123456789", _: "+380 12 345 67 89" } }, " для консультації."] },\n    { hr: true },\n    { p: { $class: "alert alert-info", _: "ℹ️ Це повідомлення зі стилем Bootstrap alert." } }\n  ]\n}} />`}
+								>
+									<Blocks.Content
+										page={{
+											content: [
+												{
+													p: [
+														'Зверніться до ',
+														{ a: { $href: 'tel:+380123456789', _: '+380 12 345 67 89' } },
+														' для консультації.',
+													],
+												},
+												{ hr: true },
+												{
+													p: {
+														$class: 'alert alert-info',
+														_: 'ℹ️ Це повідомлення зі стилем Bootstrap alert.',
+													},
+												},
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Accordion Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  ACCORDION                                         */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-accordion"
 						title="Blocks.Accordion"
-						description="Інтерактивний компонент 'акордеон' з питаннями-відповідями (Bootstrap JS collapse)."
-						locale={locale}
-						componentUsage={`<Blocks.Accordion \n  page={{\n    accordion: [\n      { q: "Що це таке?", a: "Це нова система універсальних блоків." },\n      { title: "Як це працює?", content: "Через єдиний Renderer та Model as Schema." }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Accordion'],
-							accordion: [
-								{ q: 'Що це таке?', a: 'Це нова система універсальних блоків.' },
-								{ title: 'Як це працює?', content: 'Через єдиний Renderer та Model as Schema.' },
-							],
-						}}
+						description="Інтерактивний акордеон (Bootstrap JS collapse). Два формати: { q, a } або { title, content }. Підтримує HTML в body."
 					>
-						<Blocks.Accordion
-							page={{
-								accordion: [
-									{ q: 'Що це таке?', a: 'Це нова система універсальних блоків.' },
-									{ title: 'Як це працює?', content: 'Через єдиний Renderer та Model as Schema.' },
-								],
-							}}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Формат Q&A (питання та відповіді)"
+									code={`<Blocks.Accordion page={{\n  accordion: [\n    { q: "Як відкрити рахунок?", a: "Звертайтесь у найближче відділення з паспортом та ІПН." },\n    { q: "Який мінімальний вклад?", a: "Від 500 грн для ощадних і від 10 000 грн для депозитних програм." },\n    { q: "Чи є мобільний додаток?", a: "Так, доступний для iOS і Android." }\n  ]\n}} />`}
+								>
+									<Blocks.Accordion
+										page={{
+											accordion: [
+												{
+													q: 'Як відкрити рахунок?',
+													a: 'Звертайтесь у найближче відділення з паспортом та ІПН.',
+												},
+												{
+													q: 'Який мінімальний вклад?',
+													a: 'Від 500 грн для ощадних і від 10 000 грн для депозитних програм.',
+												},
+												{ q: 'Чи є мобільний додаток?', a: 'Так, доступний для iOS і Android.' },
+											],
+										}}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Формат title/content з HTML"
+									code={`<Blocks.Accordion page={{\n  accordion: [\n    { title: "Умови кредитування", content: "<strong>Ставка:</strong> від 0.01% річних.<br/>Строк: від 1 до 60 місяців." },\n    { title: "Необхідні документи", content: "<ul><li>Паспорт</li><li>ІПН</li><li>Довідка про доходи</li></ul>" }\n  ]\n}} />`}
+								>
+									<Blocks.Accordion
+										page={{
+											accordion: [
+												{
+													title: 'Умови кредитування',
+													content:
+														'<strong>Ставка:</strong> від 0.01% річних.<br/>Строк: від 1 до 60 місяців.',
+												},
+												{
+													title: 'Необхідні документи',
+													content:
+														'<ul><li>Паспорт</li><li>ІПН</li><li>Довідка про доходи</li></ul>',
+												},
+											],
+										}}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Model as Schema (YAML)"
+									isYaml
+									code={{
+										$content: ['Accordion'],
+										accordion: [
+											{ q: 'Як це працює?', a: 'Через єдиний Renderer та Model as Schema.' },
+											{ title: 'Чи це безкоштовно?', content: 'Так, повністю.' },
+										],
+									}}
+								>
+									<Renderer
+										page={{
+											$content: ['Accordion'],
+											accordion: [
+												{ q: 'Як це працює?', a: 'Через єдиний Renderer та Model as Schema.' },
+												{ title: 'Чи це безкоштовно?', content: 'Так, повністю.' },
+											],
+										}}
+										locale={locale}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Files Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  FILES                                             */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-files"
 						title="Blocks.Files"
-						description="Секція документів (іконку скріпки додає сам компонент). Можна задати свій заголовок через filesTitle."
-						locale={locale}
-						componentUsage={`<Blocks.Files \n  locale={locale}\n  page={{\n    filesTitle: "Договори та документи",\n    files: [\n      { href: "/test.pdf", name: "Документація (PDF)" },\n      { href: "https://example.com", title: "Зовнішнє посилання" }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Files'],
-							filesTitle: 'Договори та документи',
-							files: [
-								{ href: '/test.pdf', name: 'Документація (PDF)' },
-								{ href: 'https://example.com', title: 'Зовнішнє посилання' },
-							],
-						}}
+						description={`Секція документів. Заголовок задається через проп title (по замовчуванню: "${locale === 'uk' ? 'Документи' : 'Documents'}"). Зовнішні посилання та .pdf відкриваються в новій вкладці.`}
 					>
-						<Blocks.Files
-							locale={locale}
-							page={{
-								filesTitle: 'Договори та документи',
-								files: [
-									{ href: '/test.pdf', name: 'Документація (PDF)' },
-									{ href: 'https://example.com', title: 'Зовнішнє посилання' },
-								],
-							}}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-6">
+								<Example
+									label="Стандартне використання (без title)"
+									code={`<Blocks.Files \n  locale={locale}\n  page={{\n    files: [\n      { href: "/tariffs.pdf", name: "Тарифи банку (PDF)" },\n      { href: "/license.pdf", name: "Ліцензія НБУ" }\n    ]\n  }}\n/>`}
+								>
+									<Blocks.Files
+										locale={locale}
+										page={{
+											files: [
+												{ href: '/tariffs.pdf', name: 'Тарифи банку (PDF)' },
+												{ href: '/license.pdf', name: 'Ліцензія НБУ' },
+											],
+										}}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="З кастомним заголовком (title prop)"
+									code={`<Blocks.Files \n  locale={locale}\n  title="${locale === 'uk' ? 'Договори та регламенти' : 'Agreements & Regulations'}"\n  page={{\n    files: [\n      { href: "/contract.pdf", name: "${locale === 'uk' ? 'Типовий договір' : 'Standard Contract'}" },\n      { href: "https://bank.gov.ua", title: "${locale === 'uk' ? 'Регулятор (НБУ)' : 'Regulator (NBU)'}" },\n      { href: "/rules.pdf", name: "${locale === 'uk' ? 'Правила обслуговування' : 'Service Rules'}" }\n    ]\n  }}\n/>`}
+								>
+									<Blocks.Files
+										locale={locale}
+										title={locale === 'uk' ? 'Договори та регламенти' : 'Agreements & Regulations'}
+										page={{
+											files: [
+												{
+													href: '/contract.pdf',
+													name: locale === 'uk' ? 'Типовий договір' : 'Standard Contract',
+												},
+												{
+													href: 'https://bank.gov.ua',
+													title: locale === 'uk' ? 'Регулятор (НБУ)' : 'Regulator (NBU)',
+												},
+												{
+													href: '/rules.pdf',
+													name: locale === 'uk' ? 'Правила обслуговування' : 'Service Rules',
+												},
+											],
+										}}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Price Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  PRICE                                             */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-price"
 						title="Blocks.Price"
-						description="Блок для відображення ціни. Підтримує локалізацію (UK/EN 'Ціна' vs 'Price'). Тут наведено велике число як приклад."
-						locale={locale}
-						componentUsage={`<Blocks.Price \n  locale={locale} \n  page={{ price: "1 500 000.00 ₴" }} \n/>`}
-						schemaPayload={{
-							$content: ['Price'],
-							price: '1 500 000.00 ₴',
-						}}
+						description={`Блок ціни. Лейбл локалізовано ("${locale === 'uk' ? 'Ціна' : 'Price'}"). Натисни кнопку мови зверху, щоб перевірити.`}
 					>
-						<Blocks.Price page={{ price: '1 500 000.00 ₴' }} locale={locale} />
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-lg-4">
+								<Example
+									label="Безкоштовно"
+									code={`<Blocks.Price locale="${locale}" page={{ price: "${locale === 'uk' ? 'Безкоштовно' : 'Free'}" }} />`}
+								>
+									<Blocks.Price
+										locale={locale}
+										page={{ price: locale === 'uk' ? 'Безкоштовно' : 'Free' }}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-4">
+								<Example
+									label="Грошова сума"
+									code={`<Blocks.Price locale="${locale}" page={{ price: "1 500 000.00 ₴" }} />`}
+								>
+									<Blocks.Price locale={locale} page={{ price: '1 500 000.00 ₴' }} />
+								</Example>
+							</div>
+							<div className="col-lg-4">
+								<Example
+									label="Валюта (USD)"
+									code={`<Blocks.Price locale="${locale}" page={{ price: "$99.99 / ${locale === 'uk' ? 'міс' : 'mo'}" }} />`}
+								>
+									<Blocks.Price
+										locale={locale}
+										page={{ price: `$99.99 / ${locale === 'uk' ? 'міс' : 'mo'}` }}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 
-					{/* Contract Block */}
-					<BlockShowcase
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  CONTRACT                                          */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
 						id="block-contract"
 						title="Blocks.Contract"
-						description="Кнопка для друку і секції регламенту з навігатором (dropdown)."
-						locale={locale}
-						componentUsage={`<Blocks.Contract \n  locale={locale}\n  page={{\n    $pageNavigator: { text: "Навігація по контракту" },\n    contract: [\n      { id: "section-1", title: "1. Загальні положення", content: [{ p: "Текст положення 1." }] },\n      { id: "section-2", title: "2. Права та обов'язки", content: [{ p: "Текст обов'язків." }] }\n    ]\n  }}\n/>`}
-						schemaPayload={{
-							$content: ['Contract'],
-							$pageNavigator: { text: 'Навігація по контракту' },
-							contract: [
-								{
-									id: 'section-1',
-									title: '1. Загальні положення',
-									content: [{ p: 'Текст положення 1.' }],
-								},
-								{
-									id: 'section-2',
-									title: "2. Права та обов'язки",
-									content: [{ p: "Текст обов'язків." }],
-								},
-							],
-						}}
+						description={`Документ-регламент з навігацією по розділах (dropdown) та кнопкою друку ("${locale === 'uk' ? 'Друкувати документ' : 'Print document'}"). Перемкни мову для перевірки.`}
 					>
-						<Blocks.Contract
-							page={{
-								$pageNavigator: { text: 'Навігація по контракту' },
-								contract: [
-									{
-										id: 'section-1',
-										title: '1. Загальні положення',
-										content: [{ p: 'Текст положення 1.' }],
-									},
-									{
-										id: 'section-2',
-										title: "2. Права та обов'язки",
-										content: [{ p: "Текст обов'язків." }],
-									},
-								],
-							}}
-							{...sharedProps}
-						/>
-					</BlockShowcase>
+						<div className="row g-4">
+							<div className="col-12">
+								<Example
+									label="Повний приклад з 3 розділами"
+									code={`<Blocks.Contract \n  locale="${locale}"\n  page={{\n    $pageNavigator: { text: "${locale === 'uk' ? 'Перейти до розділу' : 'Go to section'}" },\n    contract: [\n      { id: "general", title: "1. ${locale === 'uk' ? 'Загальні положення' : 'General Provisions'}", content: [{ p: "${locale === 'uk' ? 'Цей договір регулює відносини між Банком та Клієнтом.' : 'This agreement governs relations between the Bank and the Client.'}" }] },\n      { id: "rights", title: "2. ${locale === 'uk' ? "Права та обов'язки" : 'Rights and Obligations'}", content: [{ p: "${locale === 'uk' ? "Банк зобов'язується надавати послуги відповідно до умов договору." : 'The Bank commits to providing services according to the terms.'}" }] },\n      { id: "terms", title: "3. ${locale === 'uk' ? 'Строки та умови' : 'Terms and Conditions'}", content: [{ p: "${locale === 'uk' ? 'Договір укладається строком на 12 місяців з дати підписання.' : 'The agreement is concluded for 12 months from the date of signing.'}" }] }\n    ]\n  }}\n/>`}
+								>
+									<Blocks.Contract
+										locale={locale}
+										page={{
+											$pageNavigator: {
+												text: locale === 'uk' ? 'Перейти до розділу' : 'Go to section',
+											},
+											contract: [
+												{
+													id: 'general',
+													title:
+														locale === 'uk' ? '1. Загальні положення' : '1. General Provisions',
+													content: [
+														{
+															p:
+																locale === 'uk'
+																	? 'Цей договір регулює відносини між Банком та Клієнтом.'
+																	: 'This agreement governs relations between the Bank and the Client.',
+														},
+													],
+												},
+												{
+													id: 'rights',
+													title:
+														locale === 'uk' ? "2. Права та обов'язки" : '2. Rights and Obligations',
+													content: [
+														{
+															p:
+																locale === 'uk'
+																	? "Банк зобов'язується надавати послуги відповідно до умов договору."
+																	: 'The Bank commits to providing services according to the terms.',
+														},
+													],
+												},
+												{
+													id: 'terms',
+													title: locale === 'uk' ? '3. Строки та умови' : '3. Terms and Conditions',
+													content: [
+														{
+															p:
+																locale === 'uk'
+																	? 'Договір укладається строком на 12 місяців з дати підписання.'
+																	: 'The agreement is concluded for 12 months from the date of signing.',
+														},
+													],
+												},
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+							<div className="col-lg-6">
+								<Example
+									label="Без навігатора (тільки друк)"
+									code={`<Blocks.Contract locale="${locale}" page={{\n  contract: [\n    { id: "s1", title: "${locale === 'uk' ? 'Умови' : 'Terms'}", content: [{ p: "${locale === 'uk' ? 'Текст розділу.' : 'Section text.'}" }] }\n  ]\n}} />`}
+								>
+									<Blocks.Contract
+										locale={locale}
+										page={{
+											contract: [
+												{
+													id: 's1',
+													title: locale === 'uk' ? 'Умови' : 'Terms',
+													content: [{ p: locale === 'uk' ? 'Текст розділу.' : 'Section text.' }],
+												},
+											],
+										}}
+										{...sharedProps}
+									/>
+								</Example>
+							</div>
+						</div>
+					</BlockSection>
 				</div>
 			</div>
 		</div>
