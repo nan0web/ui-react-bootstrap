@@ -11,7 +11,7 @@ function Example({ label, children, jsxCode, yamlCode }) {
 		<div className="mb-4">
 			{label && <h6 className="text-muted text-uppercase small fw-semibold mb-2">{label}</h6>}
 			<div className="card border-0 shadow-sm mb-3">
-				<div className="card-body bg-white py-4">{children}</div>
+				<div className="card-body example-preview py-4">{children}</div>
 			</div>
 
 			<div className="row g-2">
@@ -97,7 +97,6 @@ export default function Playground({ db }) {
 	const sharedProps = { db, locale }
 
 	const blocks = [
-		'Page',
 		'Nav',
 		'Sidebar',
 		'Callout',
@@ -188,52 +187,22 @@ export default function Playground({ db }) {
 					{/*  NEW BLOCKS                                       */}
 					{/* ═══════════════════════════════════════════════════ */}
 
-					<BlockSection
-						id="block-page"
-						title="Blocks.Page"
-						description="Структурний макет сторінки (Page). Контейнер для складної верстки аркуша."
-					>
-						<Example
-							label="Повноцінна сторінка з контентом"
-							jsxCode={`<Blocks.Page>\n  <Blocks.Description doc={{ description: "Main page text" }} />\n</Blocks.Page>`}
-							yamlCode={{ $content: ['Page'], page: [{ Description: 'Main page text' }] }}
-						>
-							<div
-								className="p-3 border rounded mb-3 text-center text-muted"
-								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
-							>
-								Page block renders multiple blocks in a column inside Layout/Renderer.
-								<div
-									className="mt-3 p-3 border rounded shadow-sm text-start"
-									style={{ backgroundColor: 'var(--bs-body-bg)' }}
-								>
-									<Blocks.Description
-										doc={{
-											description: locale === 'uk' ? 'Текст основної сторінки' : 'Main page text',
-										}}
-									/>
-								</div>
-							</div>
-						</Example>
-						<Example
-							label="Порожня сторінка (Placeholder)"
-							jsxCode={`<Blocks.Page />`}
-							yamlCode={{ $content: ['Page'] }}
-						>
-							<div
-								className="p-3 border rounded text-center text-muted"
-								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
-							>
-								Empty Page Block Placeholder
-							</div>
-						</Example>
-					</BlockSection>
-
 					<BlockSection id="block-nav" title="Blocks.Nav" description="Верхня навігація (Navbar).">
 						<Example
 							label="Головна навігація"
-							jsxCode={`<Blocks.Nav brand={{ title: "Bank" }} items={[{ title: "Home" }]} />`}
-							yamlCode={{ $content: ['Nav'], brand: { title: 'Bank' }, items: [{ title: 'Home' }] }}
+							jsxCode={`<Blocks.Nav \n  brand={{ title: "Bank Shell", url: "#" }} \n  items={[\n    { title: "Головна", url: "#" },\n    { title: "Про нас", url: "#" },\n    { title: "Послуги", children: [{ title: "Депозити" }, { title: "Кредити" }] }\n  ]} \n/>`}
+							yamlCode={{
+								$content: ['Nav'],
+								brand: { title: 'Bank Shell', url: '#' },
+								items: [
+									{ title: 'Головна', url: '#' },
+									{ title: 'Про нас', url: '#' },
+									{
+										title: 'Послуги',
+										children: [{ title: 'Депозити' }, { title: 'Кредити' }],
+									},
+								],
+							}}
 						>
 							<Blocks.Nav
 								brand={{ title: 'Bank Shell', url: '#' }}
@@ -249,8 +218,8 @@ export default function Playground({ db }) {
 						</Example>
 						<Example
 							label="Тільки Логотип (Без меню)"
-							jsxCode={`<Blocks.Nav brand={{ title: "Brand Only" }} items={[]} />`}
-							yamlCode={{ $content: ['Nav'], brand: { title: 'Brand Only' } }}
+							jsxCode={`<Blocks.Nav brand={{ title: "Simple Logo", url: "#" }} items={[]} />`}
+							yamlCode={{ $content: ['Nav'], brand: { title: 'Simple Logo', url: '#' }, items: [] }}
 						>
 							<Blocks.Nav brand={{ title: 'Simple Logo', url: '#' }} items={[]} />
 						</Example>
@@ -263,11 +232,15 @@ export default function Playground({ db }) {
 					>
 						<Example
 							label="Ієрархічне меню з заголовком"
-							jsxCode={`<Blocks.Sidebar title="Settings" items={[{ title: "Profile", url: "#" }]} />`}
+							jsxCode={`<Blocks.Sidebar \n  title="Settings" \n  items={[\n    { title: "Profile", url: "#profile", active: true },\n    { title: "Security", url: "#security" },\n    { title: "Notifications", url: "#alerts" }\n  ]} \n/>`}
 							yamlCode={{
 								$content: ['Sidebar'],
-								title: 'Menu',
-								items: [{ title: 'Profile', url: '#' }],
+								title: 'Settings',
+								items: [
+									{ title: 'Profile', url: '#profile', active: true },
+									{ title: 'Security', url: '#security' },
+									{ title: 'Notifications', url: '#alerts' },
+								],
 							}}
 						>
 							<div style={{ maxWidth: '300px' }}>
@@ -367,28 +340,14 @@ export default function Playground({ db }) {
 								$content: ['ThemeToggle'],
 							}}
 						>
-							<div className="d-flex align-items-center gap-3 bg-white p-3 border rounded">
+							<div
+								className="d-flex align-items-center gap-3 p-3 border rounded shadow-sm"
+								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
+							>
 								<span className="text-muted small">
-									Поточна тема:{' '}
-									<strong>
-										{typeof document !== 'undefined'
-											? document.documentElement.getAttribute('data-bs-theme') || 'light'
-											: 'light'}
-									</strong>
+									Поточна тема: <strong>{theme}</strong>
 								</span>
-								<Blocks.ThemeToggle
-									theme={
-										typeof document !== 'undefined'
-											? document.documentElement.getAttribute('data-bs-theme') || 'light'
-											: 'light'
-									}
-									onToggle={(t) => {
-										if (t === 'dark') document.documentElement.setAttribute('data-bs-theme', 'dark')
-										else document.documentElement.removeAttribute('data-bs-theme')
-										// Force re-render of this specific part
-										setLocale(locale)
-									}}
-								/>
+								<Blocks.ThemeToggle theme={theme} onToggle={handleThemeToggle} />
 							</div>
 						</Example>
 					</BlockSection>
@@ -405,7 +364,10 @@ export default function Playground({ db }) {
 								$content: ['LangSelect'],
 							}}
 						>
-							<div className="d-flex align-items-center gap-3 bg-white p-3 border rounded">
+							<div
+								className="d-flex align-items-center gap-3 p-3 border rounded shadow-sm"
+								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
+							>
 								<span className="text-muted small">
 									Поточна мова: <strong>{locale}</strong>
 								</span>
@@ -1045,8 +1007,10 @@ export default function Playground({ db }) {
 							jsxCode={`<Blocks.Search \n  inline={true} \n  index={searchIndexData} \n/>`}
 							yamlCode={{
 								$content: ['Search'],
-								index: '/api/search.jsonl',
-								inline: true,
+								$search: {
+									index: '/api/search.jsonl',
+									inline: true,
+								},
 							}}
 						>
 							<Blocks.Search

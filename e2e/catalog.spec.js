@@ -31,7 +31,7 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(contentBlock).toBeVisible()
 
 		// In the lists example, we expect "Вік від 21 до 65 років" to be wrapped in an <li> inside <ul>
-		const listsExample = contentBlock.locator('.card-body.bg-white').first()
+		const listsExample = contentBlock.locator('.example-preview').first()
 		const listItem = listsExample.locator('ul > li').filter({ hasText: 'Вік від 21 до 65 років' })
 		await expect(listItem).toBeVisible()
 
@@ -45,13 +45,13 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(contentBlock).toBeVisible()
 
 		// Test simple default table (second example now)
-		const simpleTableExample = contentBlock.locator('.card-body.bg-white').nth(1)
+		const simpleTableExample = contentBlock.locator('.example-preview').nth(1)
 		const simpleTable = simpleTableExample.locator('table.table-striped')
 		await expect(simpleTable).toBeVisible()
 		await expect(simpleTable.locator('tbody td').filter({ hasText: 'Стандарт' })).toBeVisible()
 
 		// Test complex table with custom class (third example now)
-		const complexTableExample = contentBlock.locator('.card-body.bg-white').nth(2)
+		const complexTableExample = contentBlock.locator('.example-preview').nth(2)
 		const complexTable = complexTableExample.locator('table.table-dark')
 		await expect(complexTable).toBeVisible()
 		await expect(complexTable.locator('thead th').filter({ hasText: 'Назва' })).toBeVisible()
@@ -64,7 +64,7 @@ test.describe('Catalog Playground E2E Tests', () => {
 		const filesBlock = page.locator('#block-files')
 		await expect(filesBlock).toBeVisible()
 
-		const firstExample = filesBlock.locator('.card-body.bg-white').first()
+		const firstExample = filesBlock.locator('.example-preview').first()
 
 		// "[Тарифи банку (PDF)](/tariffs.pdf)" should become <a href="/tariffs.pdf">Тарифи банку (PDF)</a>
 		const mdLink = firstExample.locator('a[href="/tariffs.pdf"]')
@@ -72,7 +72,7 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(mdLink).toHaveText('Тарифи банку (PDF)')
 
 		// Second example - checks customized title from doc.filesTitle
-		const secondExample = filesBlock.locator('.card-body.bg-white').nth(1)
+		const secondExample = filesBlock.locator('.example-preview').nth(1)
 		await expect(secondExample.locator('h5')).toHaveText('📎 Договори')
 	})
 
@@ -80,7 +80,7 @@ test.describe('Catalog Playground E2E Tests', () => {
 		const featuresBlock = page.locator('#block-features')
 		await expect(featuresBlock).toBeVisible()
 
-		const formatExample = featuresBlock.locator('.card-body.bg-white').nth(1)
+		const formatExample = featuresBlock.locator('.example-preview').nth(1)
 
 		// Ensure bold text is wrapped in <b>
 		const boldText = formatExample.locator('b').filter({ hasText: 'Гарантована безпека' })
@@ -99,7 +99,7 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(priceBlock.getByText('Ціна:', { exact: true }).first()).toBeVisible()
 
 		// Third example: check if price renders with symbol
-		const thirdExample = priceBlock.locator('.card-body.bg-white').nth(2)
+		const thirdExample = priceBlock.locator('.example-preview').nth(2)
 		await expect(thirdExample.locator('span.fw-bold').first()).toContainText('1 500 $')
 
 		// Click toggle
