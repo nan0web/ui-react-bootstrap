@@ -17,6 +17,24 @@ export function Price({ doc, locale }) {
 	if (typeof price === 'object' && price !== null) {
 		displayPrice = price.value || price.amount || ''
 		displayCurrency = price.currency || ''
+
+		const view = doc?.$price?.view || doc?.doc?.$price?.view
+		if (view === 'symbol') {
+			switch (displayCurrency) {
+				case 'USD':
+					displayCurrency = '$'
+					break
+				case 'EUR':
+					displayCurrency = '€'
+					break
+				case 'UAH':
+					displayCurrency = '₴'
+					break
+				case 'GBP':
+					displayCurrency = '£'
+					break
+			}
+		}
 	}
 
 	return (
