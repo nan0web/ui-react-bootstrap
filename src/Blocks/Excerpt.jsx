@@ -2,23 +2,18 @@ import React from 'react'
 import { renderItem } from '../renderItem.jsx'
 
 /**
- * Excerpt — renders page.page.excerpt (array of nano items) or page.excerpt.
- * Equivalent to the excerpt block in product.ejs.
+ * Excerpt — renders doc.doc.excerpt (array of objects for nano2html)
+ * Equivalent to /_/content/excerpt logic.
  * @param {Object} props
- * @param {Object} props.page
- * @param {Function} [props.onNavigate]
- * @param {string} [props.locale]
- * @param {Object} [props.db]
- * @param {Object} [props.globals]
- * @param {Object} [props.duty]
+ * @param {Object} props.doc
  */
-export function Excerpt({ page, onNavigate, locale, db, globals, duty }) {
-	const excerpt = page?.page?.excerpt || page?.excerpt
+export function Excerpt({ doc, ...sharedProps }) {
+	const excerpt = doc?.doc?.excerpt || doc?.excerpt
 	if (!excerpt || !Array.isArray(excerpt)) return null
-	const sharedProps = { locale, page, globals, db, onNavigate, duty }
+
 	return (
-		<article className="excerpt container container-max py-3">
-			{excerpt.map((item, i) => renderItem(item, `excerpt-${i}`, sharedProps))}
-		</article>
+		<section className="container container-max py-4 lead">
+			{excerpt.map((item, i) => renderItem(item, i, sharedProps))}
+		</section>
 	)
 }

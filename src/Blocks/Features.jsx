@@ -2,32 +2,30 @@ import React from 'react'
 import { renderItem } from '../renderItem.jsx'
 
 /**
- * Features — renders page.features as a checklist.
- * Equivalent to the features block in product.ejs.
+ * Features — renders doc.doc.features as a list with checkmarks.
  * @param {Object} props
- * @param {Object} props.page
- * @param {Function} [props.onNavigate]
- * @param {string} [props.locale]
- * @param {Object} [props.db]
- * @param {Object} [props.globals]
- * @param {Object} [props.duty]
+ * @param {Object} props.doc
  */
-export function Features({ page, onNavigate, locale, db, globals, duty }) {
-	const features = page?.features || page?.page?.features
-	if (!features || !Array.isArray(features)) return null
-	const sharedProps = { locale, page, globals, db, onNavigate, duty }
+export function Features({ doc, ...sharedProps }) {
+	const features = doc?.doc?.features || doc?.features
+	if (!features || !Array.isArray(features) || features.length === 0) return null
+
 	return (
-		<div className="container container-max py-3">
-			<ul className="checked list-unstyled">
-				{features.map((item, i) => (
-					<li key={i} className="d-flex align-items-start gap-2 mb-2">
-						<span className="text-success fw-bold">✓</span>
-						<span>
-							{typeof item === 'string' ? item : renderItem(item, `feat-${i}`, sharedProps)}
-						</span>
-					</li>
-				))}
-			</ul>
-		</div>
+		<section className="bg-light bg-gradient py-5">
+			<div className="container container-max">
+				<div className="row g-4">
+					{features.map((item, i) => (
+						<div className="col-md-6 d-flex align-items-start gap-3" key={i}>
+							<div className="text-success fs-4">
+								<i className="icon-check-circle-o" />
+							</div>
+							<div className="fs-5 mt-1 text-muted">
+								{typeof item === 'string' ? item : renderItem(item, i, sharedProps)}
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
 	)
 }

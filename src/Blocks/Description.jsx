@@ -1,17 +1,20 @@
 import React from 'react'
 
 /**
- * Description — renders page.description or page.page.description as a subtitle.
- * Equivalent to /_/content/title.ejs + description block in product.ejs.
+ * Description — renders doc.doc.description or doc.description
+ * Equivalent to /_/content/description in standard.ejs
  * @param {Object} props
- * @param {Object} props.page
+ * @param {Object} props.doc
  */
-export function Description({ page }) {
-	const desc = page?.page?.description || page?.description
+export function Description({ doc }) {
+	const desc = doc?.doc?.description || doc?.description
 	if (!desc) return null
+
 	return (
-		<article className="container container-max py-2">
-			<h2 className="h3 mb-3">{desc}</h2>
-		</article>
+		<section className="bg-light py-5 text-center text-md-start">
+			<div className="container container-max">
+				<h2 className="lead fs-3 m-0 text-muted" dangerouslySetInnerHTML={{ __html: desc }} />
+			</div>
+		</section>
 	)
 }

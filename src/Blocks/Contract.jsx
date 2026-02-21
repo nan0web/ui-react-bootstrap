@@ -2,22 +2,22 @@ import React, { useState } from 'react'
 import { renderItem } from '../renderItem.jsx'
 
 /**
- * Contract — renders page.page.contract (array of sections with title, id, content).
+ * Contract — renders doc.doc.contract (array of sections with title, id, content).
  * Equivalent to contract.ejs layout.
  * Includes a sticky dropdown navigator and full document sections.
  * @param {Object} props
- * @param {Object} props.page
+ * @param {Object} props.doc
  * @param {Function} [props.onNavigate]
  * @param {string} [props.locale]
  * @param {Object} [props.db]
  * @param {Object} [props.globals]
  * @param {Object} [props.duty]
  */
-export function Contract({ page, onNavigate, locale, db, globals, duty }) {
-	const contract = page?.page?.contract || page?.contract
-	const nav = page?.$pageNavigator || page?.page?.$pageNavigator
+export function Contract({ doc, onNavigate, locale, db, globals, duty }) {
+	const contract = doc?.doc?.contract || doc?.contract
+	const nav = doc?.$docNavigator || doc?.doc?.$docNavigator
 	if (!contract || !Array.isArray(contract)) return null
-	const sharedProps = { locale, page, globals, db, onNavigate, duty }
+	const sharedProps = { locale, doc, globals, db, onNavigate, duty }
 	const [navOpen, setNavOpen] = useState(false)
 
 	return (
@@ -66,7 +66,7 @@ export function Contract({ page, onNavigate, locale, db, globals, duty }) {
 			<article className="contract container container-max" style={{ textAlign: 'justify' }}>
 				{contract.map((p, i) => (
 					<div key={i}>
-						<h3 className="mt-4" id={p.id}>
+						<h3 className="mt-4" id={p.id} style={{ scrollMarginTop: '100px' }}>
 							{p.title}
 						</h3>
 						{p.content && Array.isArray(p.content)

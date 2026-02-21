@@ -1,14 +1,14 @@
 import React from 'react'
 
 /**
- * Price — renders page.page.price if present.
- * Equivalent to the price block in product.ejs.
+ * Price — displays a large price label.
+ * Localized "Price:" vs "Ціна:" automatically via locale.
  * @param {Object} props
- * @param {Object} props.page
+ * @param {Object} props.doc
  * @param {string} props.locale
  */
-export function Price({ page, locale }) {
-	const price = page?.page?.price || page?.price
+export function Price({ doc, locale }) {
+	const price = doc?.doc?.price || doc?.price
 	if (!price) return null
 	return (
 		<div className="container container-max py-3">

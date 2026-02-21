@@ -92,7 +92,7 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 				<RegistryComponent
 					key={index}
 					{...sharedProps}
-					node={sharedProps.page?.[item.toLowerCase()]}
+					node={sharedProps.doc?.[item.toLowerCase()]}
 				/>
 			)
 		}
@@ -236,13 +236,18 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 						if (getBlockMap()[v] || registry[v] || v.startsWith('App.')) {
 							return renderItem(v, `${index}-${i}`, sharedProps, registry)
 						}
-						if (v.includes('&')) {
-							return createElement('span', {
-								key: `${index}-${i}`,
-								dangerouslySetInnerHTML: { __html: v },
-							})
+						const processedString = v.includes('&')
+							? createElement('span', {
+									key: `${index}-${i}`,
+									dangerouslySetInnerHTML: { __html: v },
+								})
+							: v
+
+						if (key === 'ul' || key === 'ol') {
+							return createElement('li', { key: `${index}-${i}` }, processedString)
 						}
-						return v
+
+						return processedString
 					}
 					return renderItem(v, `${index}-${i}`, sharedProps, registry)
 				}),
@@ -252,8 +257,23 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 		if (typeof value === 'string' && value.includes('&')) {
 			return createElement(key, { ...props, dangerouslySetInnerHTML: { __html: value } })
 		}
-		// Object value — render recursively (e.g. { $class: "table", table: [...] })
+		// Object value — render recursively (e.g. { $class: "table", table: {thead: [], tbody: []} })
 		if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+			const childKeys = Object.keys(value).filter((k) => !k.startsWith('$'))
+			if (childKeys.length > 1) {
+				return createElement(
+					key,
+					props,
+					childKeys.map((childKey, i) =>
+						renderItem(
+							{ [childKey]: value[childKey] },
+							`${index}-child-${i}`,
+							sharedProps,
+							registry,
+						),
+					),
+				)
+			}
 			return createElement(key, props, renderItem(value, `${index}-child`, sharedProps, registry))
 		}
 		return createElement(key, props, value)
@@ -279,7 +299,7 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 			<InternalComponent
 				key={index}
 				// Support dynamic passing of properties from item node
-				node={value === true ? sharedProps.page?.[key.toLowerCase()] : item}
+				node={value === true ? sharedProps.doc?.[key.toLowerCase()] : item}
 				{...sharedProps}
 			/>
 		)
@@ -332,30 +352,30 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 /**
  * Component version of the core Content Renderer
  */
-export function Renderer({ page, globals, locale, db, onNavigate, duty, registry = {} }) {
-	if (!page) return null
+export function Renderer({ doc, globals, locale, db, onNavigate, duty, registry = {} }) {
+	if (!doc) return null
 
-	// Content priority: explicit $content > layout-generated > page.content > page.page.content
-	let content = page.$content || null
+	// Content priority: explicit $content > layout-generated > doc.content > doc.doc.content
+	let content = doc.$content || null
 	if (!content) {
-		const layout = page.$layout
+		const layout = doc.$layout
 		if (layout) {
 			content = layoutToContent(layout)
 		}
 	}
 	if (!content) {
-		content = page.content || page.page?.content || []
+		content = doc.content || doc.doc?.content || []
 	}
-	const sharedProps = { locale, page, globals, db, onNavigate, duty }
+	const sharedProps = { locale, doc, globals, db, onNavigate, duty }
 
-	if (page.$redirect) {
+	if (doc.$redirect) {
 		return (
 			<div className="container py-5 text-center">
 				<div className="spinner-border text-primary mb-3" />
 				<p>
 					Redirecting to{' '}
-					<a href={page.$redirect} onClick={(e) => onNavigate(e, page.$redirect)}>
-						{page.$redirect}
+					<a href={doc.$redirect} onClick={(e) => onNavigate(e, doc.$redirect)}>
+						{doc.$redirect}
 					</a>
 					...
 				</p>
@@ -364,10 +384,10 @@ export function Renderer({ page, globals, locale, db, onNavigate, duty, registry
 	}
 
 	const hasContent = Array.isArray(content) && content.length > 0
-	let promo = page.promo || page.page?.promo
-	const title = page.page?.title || page.title
-	const hideTitle = page.$hideTitle ?? page.page?.$hideTitle ?? false
-	let image = page.page?.image || page.image || page.page?.imageUrl || page.imageUrl
+	let promo = doc.promo || doc.doc?.promo
+	const title = doc.doc?.title || doc.title
+	const hideTitle = doc.$hideTitle ?? doc.doc?.$hideTitle ?? false
+	let image = doc.doc?.image || doc.image || doc.doc?.imageUrl || doc.imageUrl
 
 	// Якщо $content явно має 'Promo', не дублюємо його зверху
 	if (
@@ -414,10 +434,10 @@ export function Renderer({ page, globals, locale, db, onNavigate, duty, registry
 				<>
 					{title &&
 						!hideTitle &&
-						!page.promo &&
-						!page.page?.promo &&
-						!page.image &&
-						!page.page?.image && (
+						!doc.promo &&
+						!doc.doc?.promo &&
+						!doc.image &&
+						!doc.doc?.image && (
 							<section className="container text-center text-md-start pt-5 pb-4">
 								<h1 className="fw-bold m-0">{title}</h1>
 							</section>
@@ -431,7 +451,7 @@ export function Renderer({ page, globals, locale, db, onNavigate, duty, registry
 					<div
 						className="lead"
 						dangerouslySetInnerHTML={{
-							__html: page.description || page.page?.description || page.text || '',
+							__html: doc.description || doc.doc?.description || doc.text || '',
 						}}
 					/>
 				</div>

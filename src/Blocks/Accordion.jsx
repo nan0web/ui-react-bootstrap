@@ -1,50 +1,55 @@
 import React from 'react'
 
 /**
- * Accordion — renders page.page.accordion or page.accordion as Bootstrap accordion.
- * Equivalent to /_/content/accordion in product.ejs.
+ * Accordion — renders doc.doc.accordion (array of `{q, a}` or `{title, content}`)
+ * as a fully interactive Bootstrap accordion with standard unique ID generation.
  * @param {Object} props
- * @param {Object} props.page
+ * @param {Object} props.doc
  */
-export function Accordion({ page }) {
-	const accordion = page?.page?.accordion || page?.accordion
+export function Accordion({ doc }) {
+	const accordion = doc?.doc?.accordion || doc?.accordion
 	if (!accordion || !Array.isArray(accordion)) return null
-	const baseId = React.useId().replace(/:/g, '')
+
+	// Generate a unique ID for this instance in case of multiple accordions
+	const uid = React.useId().replace(/:/g, '')
+	const accId = `accordion-${uid}`
+
 	return (
-		<section className="container container-max mb-5">
-			<div className="accordion" id={`pageAccordion-${baseId}`}>
-				{accordion.map((item, i) => {
-					const id = `accordion-${baseId}-${i}`
-					return (
-						<div className="accordion-item" key={id}>
-							<h2 className="accordion-header" id={`heading-${id}`}>
-								<button
-									className={`accordion-button ${i > 0 ? 'collapsed' : ''}`}
-									type="button"
-									data-bs-toggle="collapse"
-									data-bs-target={`#collapse-${id}`}
-									aria-expanded={i === 0 ? 'true' : 'false'}
-									aria-controls={`collapse-${id}`}
-								>
-									{item.title || item.q || `Питання ${i + 1}`}
-								</button>
-							</h2>
-							<div
-								id={`collapse-${id}`}
-								className={`accordion-collapse collapse ${i === 0 ? 'show' : ''}`}
-								aria-labelledby={`heading-${id}`}
-								data-bs-parent={`#pageAccordion-${baseId}`}
-							>
+		<section className="bg-light py-5">
+			<div className="container container-max">
+				<div className="accordion accordion-flush" id={accId}>
+					{accordion.map((item, i) => {
+						const headingId = `heading-${uid}-${i}`
+						const collapseId = `collapse-${uid}-${i}`
+						return (
+							<div className="accordion-item bg-transparent" key={i}>
+								<h2 className="accordion-header" id={headingId}>
+									<button
+										className="accordion-button collapsed fw-bold bg-transparent"
+										type="button"
+										data-bs-toggle="collapse"
+										data-bs-target={`#${collapseId}`}
+										aria-expanded="false"
+										aria-controls={collapseId}
+									>
+										{item.q || item.title}
+									</button>
+								</h2>
 								<div
-									className="accordion-body"
-									dangerouslySetInnerHTML={{
-										__html: item.content || item.a || item.text || '',
-									}}
-								/>
+									id={collapseId}
+									className="accordion-collapse collapse"
+									aria-labelledby={headingId}
+									data-bs-parent={`#${accId}`}
+								>
+									<div
+										className="accordion-body text-muted"
+										dangerouslySetInnerHTML={{ __html: item.a || item.content }}
+									/>
+								</div>
 							</div>
-						</div>
-					)
-				})}
+						)
+					})}
+				</div>
 			</div>
 		</section>
 	)
