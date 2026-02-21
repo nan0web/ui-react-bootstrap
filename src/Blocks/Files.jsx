@@ -30,11 +30,11 @@ export function Files({ doc, title, locale = 'uk' }) {
 								href = match[2]
 							} else {
 								href = f
-								name = f
+								name = f.split('/').pop() || f
 							}
 						} else if (typeof f === 'object' && f !== null) {
 							href = f.src || f.href || '#'
-							name = f.name || f.title || href
+							name = f.name || f.title || href.split('/').pop() || href
 						}
 
 						const isExternal =

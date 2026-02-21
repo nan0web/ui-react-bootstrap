@@ -171,25 +171,37 @@ export default function Playground({ db }) {
 					>
 						<Example
 							label="Простий текст"
-							jsxCode={`<Blocks.Description doc={{ description: "Короткий опис сторінки" }} />`}
-							yamlCode={{ $content: ['Description'], description: 'Короткий опис сторінки' }}
-						>
-							<Blocks.Description doc={{ description: 'Короткий опис сторінки' }} />
-						</Example>
-
-						<Example
-							label="Довгий підзаголовок"
-							jsxCode={`<Blocks.Description doc={{ description: "Цей блок відображає опис або підзаголовок сторінки. Він підтримує довгі описи з різними символами та & HTML entities." }} />`}
+							jsxCode={`<Blocks.Description doc={{ description: locale === 'uk' ? "Короткий опис сторінки" : "Short page description" }} />`}
 							yamlCode={{
 								$content: ['Description'],
-								description:
-									'Цей блок відображає опис або підзаголовок сторінки. Він підтримує довгі описи з різними символами та & HTML entities.',
+								description: locale === 'uk' ? 'Короткий опис сторінки' : 'Short page description',
 							}}
 						>
 							<Blocks.Description
 								doc={{
 									description:
-										'Цей блок відображає опис або підзаголовок сторінки. Він підтримує довгі описи з різними символами та & HTML entities.',
+										locale === 'uk' ? 'Короткий опис сторінки' : 'Short page description',
+								}}
+							/>
+						</Example>
+
+						<Example
+							label="Довгий підзаголовок (HTML & entities)"
+							jsxCode={`<Blocks.Description doc={{ description: locale === 'uk' ? "Цей блок відображає опис або <br/> підзаголовок &amp; сторінки." : "This block displays the description or <br/> subtitle &amp; of the page." }} />`}
+							yamlCode={{
+								$content: ['Description'],
+								description:
+									locale === 'uk'
+										? 'Цей блок відображає опис або <br/> підзаголовок &amp; сторінки.'
+										: 'This block displays the description or <br/> subtitle &amp; of the page.',
+							}}
+						>
+							<Blocks.Description
+								doc={{
+									description:
+										locale === 'uk'
+											? 'Цей блок відображає опис або <br/> підзаголовок &amp; сторінки.'
+											: 'This block displays the description or <br/> subtitle &amp; of the page.',
 								}}
 							/>
 						</Example>
@@ -201,40 +213,55 @@ export default function Playground({ db }) {
 					<BlockSection
 						id="block-excerpt"
 						title="Blocks.Excerpt"
-						description="Вступний текст (excerpt). Масив nano-вузлів. Підтримує форматування через вбудований renderItem."
+						description="Вступний текст (excerpt). Масив nano-вузлів. Форматування через nano2html підтримує теги a, span, b, i, тощо."
 					>
 						<Example
 							label="Один абзац"
-							jsxCode={`<Blocks.Excerpt doc={{\n  excerpt: [{ p: "Простий вступний абзац без форматування." }]\n}} />`}
+							jsxCode={`<Blocks.Excerpt doc={{\n  excerpt: [{ p: locale === 'uk' ? "Простий вступний абзац без форматування." : "Simple intro paragraph without formatting." }]\n}} />`}
 							yamlCode={{
 								$content: ['Excerpt'],
-								excerpt: [{ p: 'Простий вступний абзац без форматування.' }],
+								excerpt: [
+									{
+										p:
+											locale === 'uk'
+												? 'Простий вступний абзац без форматування.'
+												: 'Simple intro paragraph without formatting.',
+									},
+								],
 							}}
 						>
 							<Blocks.Excerpt
-								doc={{ excerpt: [{ p: 'Простий вступний абзац без форматування.' }] }}
+								doc={{
+									excerpt: [
+										{
+											p:
+												locale === 'uk'
+													? 'Простий вступний абзац без форматування.'
+													: 'Simple intro paragraph without formatting.',
+										},
+									],
+								}}
 								{...sharedProps}
 							/>
 						</Example>
 
 						<Example
-							label="Форматований текст (Bold, Italic, Link)"
-							jsxCode={`<Blocks.Excerpt doc={{\n  excerpt: [\n    { p: ["Цей текст містить ", { b: "жирний" }, ", ", { i: "курсив" }, " та ", { a: { $href: "#", _: "посилання" } }, "."] },\n    { p: "Другий абзац для демонстрації відступів." }\n  ]\n}} />`}
+							label="Форматований текст (Bold, Italic, Спрощені Посилання)"
+							jsxCode={`<Blocks.Excerpt doc={{\n  excerpt: [\n    { p: [\n      locale === 'uk' ? "Цей текст містить " : "This text contains ",\n      { b: locale === 'uk' ? "жирний" : "bold" },\n      ", ",\n      { i: locale === 'uk' ? "курсив" : "italic" },\n      locale === 'uk' ? " та " : " and ",\n      /* ЗВЕРНИ УВАГУ: атрибути передаються плоским ключем $ */\n      { a: locale === 'uk' ? "посилання" : "link", $href: "#" },\n      "."\n    ] }\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Excerpt'],
 								excerpt: [
 									{
 										p: [
-											'Цей текст містить ',
-											{ b: 'жирний' },
+											locale === 'uk' ? 'Цей текст містить ' : 'This text contains ',
+											{ b: locale === 'uk' ? 'жирний' : 'bold' },
 											', ',
-											{ i: 'курсив' },
-											' та ',
-											{ a: { $href: '#', _: 'посилання' } },
+											{ i: locale === 'uk' ? 'курсив' : 'italic' },
+											locale === 'uk' ? ' та ' : ' and ',
+											{ a: locale === 'uk' ? 'посилання' : 'link', $href: '#' },
 											'.',
 										],
 									},
-									{ p: 'Другий абзац для демонстрації відступів.' },
 								],
 							}}
 						>
@@ -243,16 +270,15 @@ export default function Playground({ db }) {
 									excerpt: [
 										{
 											p: [
-												'Цей текст містить ',
-												{ b: 'жирний' },
+												locale === 'uk' ? 'Цей текст містить ' : 'This text contains ',
+												{ b: locale === 'uk' ? 'жирний' : 'bold' },
 												', ',
-												{ i: 'курсив' },
-												' та ',
-												{ a: { $href: '#', _: 'посилання' } },
+												{ i: locale === 'uk' ? 'курсив' : 'italic' },
+												locale === 'uk' ? ' та ' : ' and ',
+												{ a: locale === 'uk' ? 'посилання' : 'link', $href: '#' },
 												'.',
 											],
 										},
-										{ p: 'Другий абзац для демонстрації відступів.' },
 									],
 								}}
 								{...sharedProps}
@@ -270,22 +296,20 @@ export default function Playground({ db }) {
 					>
 						<Example
 							label="Прості рядки"
-							jsxCode={`<Blocks.Features doc={{\n  features: [\n    "Безкоштовне обслуговування",\n    "Онлайн-підтримка 24/7",\n    "Без комісії за переказ"\n  ]\n}} />`}
+							jsxCode={`<Blocks.Features doc={{\n  features: [\n    locale === 'uk' ? "Безкоштовне обслуговування" : "Free maintenance",\n    locale === 'uk' ? "Онлайн-підтримка 24/7" : "24/7 online support"\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Features'],
 								features: [
-									'Безкоштовне обслуговування',
-									'Онлайн-підтримка 24/7',
-									'Без комісії за переказ',
+									locale === 'uk' ? 'Безкоштовне обслуговування' : 'Free maintenance',
+									locale === 'uk' ? 'Онлайн-підтримка 24/7' : '24/7 online support',
 								],
 							}}
 						>
 							<Blocks.Features
 								doc={{
 									features: [
-										'Безкоштовне обслуговування',
-										'Онлайн-підтримка 24/7',
-										'Без комісії за переказ',
+										locale === 'uk' ? 'Безкоштовне обслуговування' : 'Free maintenance',
+										locale === 'uk' ? 'Онлайн-підтримка 24/7' : '24/7 online support',
 									],
 								}}
 								{...sharedProps}
@@ -293,23 +317,33 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="З HTML-форматуванням (SPAN)"
-							jsxCode={`<Blocks.Features doc={{\n  features: [\n    { b: "Гарантована безпека" },\n    { span: ["Підтримка ", { b: "двох мов" }, " (UK/EN)"] },\n    { i: "Роботизований аналіз ризиків" }\n  ]\n}} />`}
+							label="З HTML-форматуванням"
+							jsxCode={`<Blocks.Features doc={{\n  features: [\n    { b: locale === 'uk' ? "Гарантована безпека" : "Guaranteed security" },\n    { span: [locale === 'uk' ? "Підтримка " : "Support for ", { b: locale === 'uk' ? "двох мов" : "two languages" }, " (UK/EN)"] }\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Features'],
 								features: [
-									{ b: 'Гарантована безпека' },
-									{ span: ['Підтримка ', { b: 'двох мов' }, ' (UK/EN)'] },
-									{ i: 'Роботизований аналіз ризиків' },
+									{ b: locale === 'uk' ? 'Гарантована безпека' : 'Guaranteed security' },
+									{
+										span: [
+											locale === 'uk' ? 'Підтримка ' : 'Support for ',
+											{ b: locale === 'uk' ? 'двох мов' : 'two languages' },
+											' (UK/EN)',
+										],
+									},
 								],
 							}}
 						>
 							<Blocks.Features
 								doc={{
 									features: [
-										{ b: 'Гарантована безпека' },
-										{ span: ['Підтримка ', { b: 'двох мов' }, ' (UK/EN)'] },
-										{ i: 'Роботизований аналіз ризиків' },
+										{ b: locale === 'uk' ? 'Гарантована безпека' : 'Guaranteed security' },
+										{
+											span: [
+												locale === 'uk' ? 'Підтримка ' : 'Support for ',
+												{ b: locale === 'uk' ? 'двох мов' : 'two languages' },
+												' (UK/EN)',
+											],
+										},
 									],
 								}}
 								{...sharedProps}
@@ -326,38 +360,44 @@ export default function Playground({ db }) {
 						description="Основний контент. Підтримує всі HTML-теги через nano2html: заголовки, параграфи, таблиці, списки."
 					>
 						<Example
-							label="Списки з автоформатом (ul/ol)"
-							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { h5: "Вимоги до позичальника:" },\n    { ul: [\n      "Вік від 21 до 65 років",\n      "Громадянство України",\n      "Стаж роботи від 6 місяців"\n    ]},\n    { h5: "Порядок оформлення:" },\n    { ol: [\n      "Подати заявку онлайн",\n      "Отримати рішення",\n      "Підписати договір"\n    ]}\n  ]\n}} />`}
+							label="Списки з автоформатом (ul/ol автоматично обгортають рядки у li)"
+							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { h5: locale === 'uk' ? "Вимоги до позичальника:" : "Requirements:" },\n    { ul: [\n      locale === 'uk' ? "Вік від 21 до 65 років" : "Age 21 to 65",\n      locale === 'uk' ? "Стаж роботи від 6 місяців" : "Work experience 6+ months"\n    ]}\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Content'],
 								content: [
-									{ h5: 'Вимоги до позичальника:' },
+									{ h5: locale === 'uk' ? 'Вимоги до позичальника:' : 'Requirements:' },
 									{
 										ul: [
-											'Вік від 21 до 65 років',
-											'Громадянство України',
-											'Стаж роботи від 6 місяців',
+											locale === 'uk' ? 'Вік від 21 до 65 років' : 'Age 21 to 65',
+											locale === 'uk' ? 'Стаж роботи від 6 місяців' : 'Work experience 6+ months',
 										],
 									},
-									{ h5: 'Порядок оформлення:' },
-									{ ol: ['Подати заявку онлайн', 'Отримати рішення', 'Підписати договір'] },
+									{ h5: locale === 'uk' ? 'Порядок оформлення:' : 'Procedure:' },
+									{
+										ol: [
+											locale === 'uk' ? 'Подати заявку онлайн' : 'Apply online',
+											locale === 'uk' ? 'Отримати рішення' : 'Get decision',
+										],
+									},
 								],
 							}}
 						>
 							<Blocks.Content
 								doc={{
 									content: [
-										{ h5: 'Вимоги до позичальника:' },
+										{ h5: locale === 'uk' ? 'Вимоги до позичальника:' : 'Requirements:' },
 										{
 											ul: [
-												'Вік від 21 до 65 років',
-												'Громадянство України',
-												'Стаж роботи від 6 місяців',
+												locale === 'uk' ? 'Вік від 21 до 65 років' : 'Age 21 to 65',
+												locale === 'uk' ? 'Стаж роботи від 6 місяців' : 'Work experience 6+ months',
 											],
 										},
-										{ h5: 'Порядок оформлення:' },
+										{ h5: locale === 'uk' ? 'Порядок оформлення:' : 'Procedure:' },
 										{
-											ol: ['Подати заявку онлайн', 'Отримати рішення', 'Підписати договір'],
+											ol: [
+												locale === 'uk' ? 'Подати заявку онлайн' : 'Apply online',
+												locale === 'uk' ? 'Отримати рішення' : 'Get decision',
+											],
 										},
 									],
 								}}
@@ -366,22 +406,30 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Заголовки, таблиці та форматування"
-							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { h5: "Заголовок H5" },\n    { table: [\n      { thead: [{ tr: [{ th: "Назва" }, { th: "Тариф" }, { th: "Строк" }] }] },\n      { tbody: [\n        { tr: [{ td: "Ощадний" }, { td: "12%" }, { td: "12 міс" }] },\n        { tr: [{ td: "Накопичувальний" }, { td: "14%" }, { td: "24 міс" }] }\n      ] }\n    ]}\n  ]\n}} />`}
+							label="Складна таблиця з автоконвертацією th/td"
+							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { h5: locale === 'uk' ? "Таблиця з кастомним класом" : "Table with custom class" },\n    { \n      table: {\n        thead: [{ tr: [locale === 'uk' ? "Назва" : "Name", locale === 'uk' ? "Тариф" : "Rate"] }],\n        tbody: [\n          { tr: [locale === 'uk' ? "Ощадний" : "Savings", "12%"] },\n          { tr: [locale === 'uk' ? "Накопичувальний" : "Accumulative", "14%"] }\n        ]\n      },\n      $class: "table table-dark table-striped mt-3"\n    }\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Content'],
 								content: [
-									{ h5: 'Заголовок H5' },
 									{
-										table: [
-											{ thead: [{ tr: [{ th: 'Назва' }, { th: 'Тариф' }, { th: 'Строк' }] }] },
-											{
-												tbody: [
-													{ tr: [{ td: 'Ощадний' }, { td: '12%' }, { td: '12 міс' }] },
-													{ tr: [{ td: 'Накопичувальний' }, { td: '14%' }, { td: '24 міс' }] },
-												],
-											},
-										],
+										h5: locale === 'uk' ? 'Таблиця з кастомним класом' : 'Table with custom class',
+									},
+									{
+										table: {
+											thead: [
+												{
+													tr: [
+														locale === 'uk' ? 'Назва' : 'Name',
+														locale === 'uk' ? 'Тариф' : 'Rate',
+													],
+												},
+											],
+											tbody: [
+												{ tr: [locale === 'uk' ? 'Ощадний' : 'Savings', '12%'] },
+												{ tr: [locale === 'uk' ? 'Накопичувальний' : 'Accumulative', '14%'] },
+											],
+										},
+										$class: 'table table-dark table-striped mt-3',
 									},
 								],
 							}}
@@ -389,17 +437,27 @@ export default function Playground({ db }) {
 							<Blocks.Content
 								doc={{
 									content: [
-										{ h5: 'Заголовок H5' },
 										{
-											table: [
-												{ thead: [{ tr: [{ th: 'Назва' }, { th: 'Тариф' }, { th: 'Строк' }] }] },
-												{
-													tbody: [
-														{ tr: [{ td: 'Ощадний' }, { td: '12%' }, { td: '12 міс' }] },
-														{ tr: [{ td: 'Накопичувальний' }, { td: '14%' }, { td: '24 міс' }] },
-													],
-												},
-											],
+											h5:
+												locale === 'uk' ? 'Таблиця з кастомним класом' : 'Table with custom class',
+										},
+										{
+											table: {
+												thead: [
+													{
+														tr: [
+															{ th: locale === 'uk' ? 'Назва' : 'Name' },
+															{ th: locale === 'uk' ? 'Тариф' : 'Rate' },
+														],
+													},
+												],
+												tbody: [
+													// We can either pass objects {td: ...} or simply strings because we implemented auto wrapper!
+													{ tr: [locale === 'uk' ? 'Ощадний' : 'Savings', '12%'] },
+													{ tr: [locale === 'uk' ? 'Накопичувальний' : 'Accumulative', '14%'] },
+												],
+											},
+											$class: 'table table-dark table-striped mt-3',
 										},
 									],
 								}}
@@ -418,20 +476,63 @@ export default function Playground({ db }) {
 					>
 						<Example
 							label="Акордеон Q&A"
-							jsxCode={`<Blocks.Accordion doc={{\n  accordion: [\n    { q: "Як відкрити рахунок?", a: "Звертайтесь у відділення." },\n    { q: "Чи є додаток?", a: "Так, для iOS." }\n  ]\n}} />`}
+							jsxCode={`<Blocks.Accordion doc={{\n  accordion: [\n    { q: locale === 'uk' ? "Як відкрити рахунок?" : "How to open an account?", a: locale === 'uk' ? "Звертайтесь у відділення." : "Please visit a branch." },\n    { q: locale === 'uk' ? "Чи є додаток?" : "Is there an app?", a: locale === 'uk' ? "Так, для iOS." : "Yes, for iOS." }\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Accordion'],
 								accordion: [
-									{ q: 'Як відкрити рахунок?', a: 'Звертайтесь у відділення.' },
-									{ q: 'Чи є додаток?', a: 'Так, для iOS.' },
+									{
+										q: locale === 'uk' ? 'Як відкрити рахунок?' : 'How to open an account?',
+										a: locale === 'uk' ? 'Звертайтесь у відділення.' : 'Please visit a branch.',
+									},
+									{
+										q: locale === 'uk' ? 'Чи є додаток?' : 'Is there an app?',
+										a: locale === 'uk' ? 'Так, для iOS.' : 'Yes, for iOS.',
+									},
 								],
 							}}
 						>
 							<Blocks.Accordion
 								doc={{
 									accordion: [
-										{ q: 'Як відкрити рахунок?', a: 'Звертайтесь у відділення.' },
-										{ q: 'Чи є додаток?', a: 'Так, для iOS.' },
+										{
+											q: locale === 'uk' ? 'Як відкрити рахунок?' : 'How to open an account?',
+											a: locale === 'uk' ? 'Звертайтесь у відділення.' : 'Please visit a branch.',
+										},
+										{
+											q: locale === 'uk' ? 'Чи є додаток?' : 'Is there an app?',
+											a: locale === 'uk' ? 'Так, для iOS.' : 'Yes, for iOS.',
+										},
+									],
+								}}
+							/>
+						</Example>
+
+						<Example
+							label="Акордеон з HTML"
+							jsxCode={`<Blocks.Accordion doc={{\n  accordion: [\n    { \n      title: locale === 'uk' ? "Комісії та тарифи" : "Fees and limits", \n      content: locale === 'uk' ? "Комісія становить <strong class='text-danger'>5%</strong> без ліміту." : "Fee is <strong class='text-danger'>5%</strong> no limits." \n    }\n  ]\n}} />`}
+							yamlCode={{
+								$content: ['Accordion'],
+								accordion: [
+									{
+										title: locale === 'uk' ? 'Комісії та тарифи' : 'Fees and limits',
+										content:
+											locale === 'uk'
+												? "Комісія становить <strong class='text-danger'>5%</strong> без ліміту."
+												: "Fee is <strong class='text-danger'>5%</strong> no limits.",
+									},
+								],
+							}}
+						>
+							<Blocks.Accordion
+								doc={{
+									accordion: [
+										{
+											title: locale === 'uk' ? 'Комісії та тарифи' : 'Fees and limits',
+											content:
+												locale === 'uk'
+													? "Комісія становить <strong class='text-danger'>5%</strong> без ліміту."
+													: "Fee is <strong class='text-danger'>5%</strong> no limits.",
+										},
 									],
 								}}
 							/>
@@ -444,37 +545,57 @@ export default function Playground({ db }) {
 					<BlockSection
 						id="block-files"
 						title="Blocks.Files"
-						description={`Блок завантаження контенту (Files). Можна передавати масив рядків: Markdown-формат "[Назва](URL)" або просто URL.`}
+						description={`Блок завантаження контенту (Files). Беремо baseName для голих URL.`}
 					>
 						<Example
-							label="Прості рядки Markdown та звичайні посилання"
-							jsxCode={`<Blocks.Files \n  locale={locale}\n  doc={{\n    files: [\n      "[Тарифи банку (PDF)](/tariffs.pdf)",\n      "https://example.com/document.pdf"\n    ]\n  }}\n/>`}
+							label="Markdown посилання та голі URL (BaseName)"
+							jsxCode={`<Blocks.Files \n  locale={locale}\n  doc={{\n    files: [\n      locale === 'uk' ? "[Тарифи банку (PDF)](/tariffs.pdf)" : "[Bank Tariffs (PDF)](/tariffs.pdf)",\n      "https://example.com/legal_document_v2.pdf"\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Files'],
-								files: ['[Тарифи банку (PDF)](/tariffs.pdf)', 'https://example.com/document.pdf'],
+								files: [
+									locale === 'uk'
+										? '[Тарифи банку (PDF)](/tariffs.pdf)'
+										: '[Bank Tariffs (PDF)](/tariffs.pdf)',
+									'https://example.com/legal_document_v2.pdf',
+								],
 							}}
 						>
 							<Blocks.Files
 								locale={locale}
 								doc={{
-									files: ['[Тарифи банку (PDF)](/tariffs.pdf)', 'https://example.com/document.pdf'],
+									files: [
+										locale === 'uk'
+											? '[Тарифи банку (PDF)](/tariffs.pdf)'
+											: '[Bank Tariffs (PDF)](/tariffs.pdf)',
+										'https://example.com/legal_document_v2.pdf',
+									],
 								}}
 							/>
 						</Example>
 
 						<Example
 							label="Як об'єкт (href/name/src/title)"
-							jsxCode={`<Blocks.Files \n  locale={locale}\n  title="Договори"\n  doc={{\n    files: [\n      { href: "/contract.pdf", name: "Типовий договір" }\n    ]\n  }}\n/>`}
+							jsxCode={`<Blocks.Files \n  locale={locale}\n  title={locale === 'uk' ? "Договори" : "Contracts"}\n  doc={{\n    files: [\n      { href: "/contract.pdf", name: locale === 'uk' ? "Типовий договір" : "Standard contract" }\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Files'],
-								files: [{ href: '/contract.pdf', name: 'Типовий договір' }],
+								files: [
+									{
+										href: '/contract.pdf',
+										name: locale === 'uk' ? 'Типовий договір' : 'Standard contract',
+									},
+								],
 							}}
 						>
 							<Blocks.Files
 								locale={locale}
-								title="Договори"
+								title={locale === 'uk' ? 'Договори' : 'Contracts'}
 								doc={{
-									files: [{ href: '/contract.pdf', name: 'Типовий договір' }],
+									files: [
+										{
+											href: '/contract.pdf',
+											name: locale === 'uk' ? 'Типовий договір' : 'Standard contract',
+										},
+									],
 								}}
 							/>
 						</Example>
@@ -486,14 +607,28 @@ export default function Playground({ db }) {
 					<BlockSection
 						id="block-price"
 						title="Blocks.Price"
-						description={`Блок ціни. Лейбл локалізовано ("${locale === 'uk' ? 'Ціна' : 'Price'}").`}
+						description={`Блок ціни. Рендерить текстові значення або об'єкти (з value/currency).`}
 					>
 						<Example
-							label="Грошова сума"
-							jsxCode={`<Blocks.Price locale={locale} doc={{ price: "1 500 000.00 ₴" }} />`}
-							yamlCode={{ $content: ['Price'], price: '1 500 000.00 ₴' }}
+							label="Текстовий формат (Безкоштовно)"
+							jsxCode={`<Blocks.Price locale={locale} doc={{ price: locale === 'uk' ? 'Безкоштовно' : 'Free of charge' }} />`}
+							yamlCode={{
+								$content: ['Price'],
+								price: locale === 'uk' ? 'Безкоштовно' : 'Free of charge',
+							}}
 						>
-							<Blocks.Price locale={locale} doc={{ price: '1 500 000.00 ₴' }} />
+							<Blocks.Price
+								locale={locale}
+								doc={{ price: locale === 'uk' ? 'Безкоштовно' : 'Free of charge' }}
+							/>
+						</Example>
+
+						<Example
+							label="Як об'єкт (value і currency)"
+							jsxCode={`<Blocks.Price \n  locale={locale} \n  doc={{\n    price: { value: "1 500", currency: "USD" }\n  }} \n/>`}
+							yamlCode={{ $content: ['Price'], price: { value: '1 500', currency: 'USD' } }}
+						>
+							<Blocks.Price locale={locale} doc={{ price: { value: '1 500', currency: 'USD' } }} />
 						</Example>
 					</BlockSection>
 
@@ -503,29 +638,24 @@ export default function Playground({ db }) {
 					<BlockSection
 						id="block-contract"
 						title="Blocks.Contract"
-						description={`Документ-регламент з навігацією. Використовуй 'id' для генерації меню.`}
+						description={`Документ-регламент з навігацією (якщо передано $docNavigator) або без навігації.`}
 					>
 						<Example
-							label="Повний регламент (3 розділи + навігатор)"
-							jsxCode={`<Blocks.Contract \n  locale={locale}\n  doc={{\n    $docNavigator: { text: "Перейти до розділу" },\n    contract: [\n      { id: "general", title: "1. Загальні положення", content: [{ p: "Текст положення 1." }] },\n      { id: "rights", title: "2. Права та обов'язки", content: [{ p: "Текст обов'язків." }] },\n      { id: "terms", title: "3. Строки та умови", content: [{ p: "Договір на 12 місяців." }] }\n    ]\n  }}\n/>`}
+							label="Повний регламент (з навігатором)"
+							jsxCode={`<Blocks.Contract \n  locale={locale}\n  doc={{\n    $docNavigator: { text: locale === 'uk' ? "Перейти до розділу" : "Jump to section" },\n    contract: [\n      { id: "general", title: locale === 'uk' ? "1. Загальні положення" : "1. General terms", content: [{ p: locale === 'uk' ? "Текст положення 1." : "Term text 1." }] },\n      { id: "rights", title: locale === 'uk' ? "2. Права та обов'язки" : "2. Rights & Duties", content: [{ p: locale === 'uk' ? "Текст обов'язків." : "Duties text." }] },\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Contract'],
-								$docNavigator: { text: 'Перейти до розділу' },
+								$docNavigator: { text: locale === 'uk' ? 'Перейти до розділу' : 'Jump to section' },
 								contract: [
 									{
 										id: 'general',
-										title: '1. Загальні положення',
-										content: [{ p: 'Текст положення 1.' }],
+										title: locale === 'uk' ? '1. Загальні положення' : '1. General terms',
+										content: [{ p: locale === 'uk' ? 'Текст положення 1.' : 'Term text 1.' }],
 									},
 									{
 										id: 'rights',
-										title: "2. Права та обов'язки",
-										content: [{ p: "Текст обов'язків." }],
-									},
-									{
-										id: 'terms',
-										title: '3. Строки та умови',
-										content: [{ p: 'Договір на 12 місяців.' }],
+										title: locale === 'uk' ? "2. Права та обов'язки" : '2. Rights & Duties',
+										content: [{ p: locale === 'uk' ? "Текст обов'язків." : 'Duties text.' }],
 									},
 								],
 							}}
@@ -533,22 +663,19 @@ export default function Playground({ db }) {
 							<Blocks.Contract
 								locale={locale}
 								doc={{
-									$docNavigator: { text: 'Перейти до розділу' },
+									$docNavigator: {
+										text: locale === 'uk' ? 'Перейти до розділу' : 'Jump to section',
+									},
 									contract: [
 										{
 											id: 'general',
-											title: '1. Загальні положення',
-											content: [{ p: 'Текст положення 1.' }],
+											title: locale === 'uk' ? '1. Загальні положення' : '1. General terms',
+											content: [{ p: locale === 'uk' ? 'Текст положення 1.' : 'Term text 1.' }],
 										},
 										{
 											id: 'rights',
-											title: "2. Права та обов'язки",
-											content: [{ p: "Текст обов'язків." }],
-										},
-										{
-											id: 'terms',
-											title: '3. Строки та умови',
-											content: [{ p: 'Договір на 12 місяців.' }],
+											title: locale === 'uk' ? "2. Права та обов'язки" : '2. Rights & Duties',
+											content: [{ p: locale === 'uk' ? "Текст обов'язків." : 'Duties text.' }],
 										},
 									],
 								}}
@@ -557,25 +684,18 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Без навігатора (тільки друк)"
-							jsxCode={`<Blocks.Contract \n  locale={locale}\n  doc={{\n    contract: [\n      { id: "general", title: "1. Загальні положення", content: [{ p: "Текст положення 1." }] },\n      { id: "rights", title: "2. Права та обов'язки", content: [{ p: "Текст обов'язків." }] },\n      { id: "terms", title: "3. Строки та умови", content: [{ p: "Договір на 12 місяців." }] }\n    ]\n  }}\n/>`}
+							label="Без навігатора (Загальні положення)"
+							jsxCode={`<Blocks.Contract \n  locale={locale}\n  doc={{\n    contract: [\n      { id: "simple", title: locale === 'uk' ? "Цей договір не має меню навігації" : "This contract has no navigation menu", content: [{ p: "..." }] }\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Contract'],
 								contract: [
 									{
-										id: 'general',
-										title: '1. Загальні положення',
-										content: [{ p: 'Текст положення 1.' }],
-									},
-									{
-										id: 'rights',
-										title: "2. Права та обов'язки",
-										content: [{ p: "Текст обов'язків." }],
-									},
-									{
-										id: 'terms',
-										title: '3. Строки та умови',
-										content: [{ p: 'Договір на 12 місяців.' }],
+										id: 'simple',
+										title:
+											locale === 'uk'
+												? 'Цей договір не має меню навігації'
+												: 'This contract has no navigation menu',
+										content: [{ p: '...' }],
 									},
 								],
 							}}
@@ -585,19 +705,12 @@ export default function Playground({ db }) {
 								doc={{
 									contract: [
 										{
-											id: 'general',
-											title: '1. Загальні положення',
-											content: [{ p: 'Текст положення 1.' }],
-										},
-										{
-											id: 'rights',
-											title: "2. Права та обов'язки",
-											content: [{ p: "Текст обов'язків." }],
-										},
-										{
-											id: 'terms',
-											title: '3. Строки та умови',
-											content: [{ p: 'Договір на 12 місяців.' }],
+											id: 'simple',
+											title:
+												locale === 'uk'
+													? 'Цей договір не має меню навігації'
+													: 'This contract has no navigation menu',
+											content: [{ p: '...' }],
 										},
 									],
 								}}

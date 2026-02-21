@@ -247,6 +247,10 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 							return createElement('li', { key: `${index}-${i}` }, processedString)
 						}
 
+						if (key === 'tr') {
+							return createElement('td', { key: `${index}-${i}` }, processedString)
+						}
+
 						return processedString
 					}
 					return renderItem(v, `${index}-${i}`, sharedProps, registry)

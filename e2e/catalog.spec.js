@@ -85,13 +85,13 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(priceBlock).toBeVisible()
 
 		// By default uk
-		await expect(priceBlock.getByText('Ціна:', { exact: true })).toBeVisible()
+		await expect(priceBlock.getByText('Ціна:', { exact: true }).first()).toBeVisible()
 
 		// Click toggle
 		await page.getByRole('button', { name: '🇺🇦 UK → EN' }).click()
 
 		// Verify string changes
-		await expect(priceBlock.getByText('Price:', { exact: true })).toBeVisible()
+		await expect(priceBlock.getByText('Price:', { exact: true }).first()).toBeVisible()
 
 		// Check toggle button changed
 		await expect(page.getByRole('button', { name: '🇬🇧 EN → UK' })).toBeVisible()
