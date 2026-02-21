@@ -11,7 +11,11 @@ import React from 'react'
 export function Files({ doc, title, locale = 'uk' }) {
 	const files = doc?.files || doc?.doc?.files
 	if (!files || !Array.isArray(files) || files.length === 0) return null
-	const heading = title || (locale === 'uk' ? 'Документи' : 'Documents')
+	const heading =
+		title ||
+		doc?.filesTitle ||
+		doc?.doc?.filesTitle ||
+		(locale === 'uk' ? 'Документи' : 'Documents')
 
 	return (
 		<section className="bg-info bg-gradient bg-opacity-10 py-4">

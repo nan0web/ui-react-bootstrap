@@ -44,16 +44,23 @@ test.describe('Catalog Playground E2E Tests', () => {
 		const contentBlock = page.locator('#block-content')
 		await expect(contentBlock).toBeVisible()
 
-		const tableExample = contentBlock.locator('.card-body.bg-white').nth(1)
+		// Test simple default table (second example now)
+		const simpleTableExample = contentBlock.locator('.card-body.bg-white').nth(1)
+		const simpleTable = simpleTableExample.locator('table.table-striped')
+		await expect(simpleTable).toBeVisible()
+		await expect(simpleTable.locator('tbody td').filter({ hasText: 'Стандарт' })).toBeVisible()
 
-		// Ensure the table structure is rendered correctly with multi-key objects
-		const table = tableExample.locator('table.table')
-		await expect(table).toBeVisible()
-		await expect(table.locator('thead th').filter({ hasText: 'Назва' })).toBeVisible()
-		await expect(table.locator('tbody td').filter({ hasText: 'Ощадний' })).toBeVisible()
+		// Test complex table with custom class (third example now)
+		const complexTableExample = contentBlock.locator('.card-body.bg-white').nth(2)
+		const complexTable = complexTableExample.locator('table.table-dark')
+		await expect(complexTable).toBeVisible()
+		await expect(complexTable.locator('thead th').filter({ hasText: 'Назва' })).toBeVisible()
+		await expect(complexTable.locator('tbody td').filter({ hasText: 'Ощадний' })).toBeVisible()
 	})
 
-	test('should parse markdown links in Files block', async ({ page }) => {
+	test('should parse markdown links in Files block and display customized title', async ({
+		page,
+	}) => {
 		const filesBlock = page.locator('#block-files')
 		await expect(filesBlock).toBeVisible()
 
@@ -63,6 +70,10 @@ test.describe('Catalog Playground E2E Tests', () => {
 		const mdLink = firstExample.locator('a[href="/tariffs.pdf"]')
 		await expect(mdLink).toBeVisible()
 		await expect(mdLink).toHaveText('Тарифи банку (PDF)')
+
+		// Second example - checks customized title from doc.filesTitle
+		const secondExample = filesBlock.locator('.card-body.bg-white').nth(1)
+		await expect(secondExample.locator('h5')).toHaveText('📎 Договори')
 	})
 
 	test('should render format highlights (e.g., spans and bold) in Features', async ({ page }) => {
@@ -87,11 +98,18 @@ test.describe('Catalog Playground E2E Tests', () => {
 		// By default uk
 		await expect(priceBlock.getByText('Ціна:', { exact: true }).first()).toBeVisible()
 
+		// Third example: check if price renders with symbol
+		const thirdExample = priceBlock.locator('.card-body.bg-white').nth(2)
+		await expect(thirdExample.locator('span.fw-bold').first()).toContainText('1 500 $')
+
 		// Click toggle
 		await page.getByRole('button', { name: '🇺🇦 UK → EN' }).click()
 
 		// Verify string changes
 		await expect(priceBlock.getByText('Price:', { exact: true }).first()).toBeVisible()
+
+		// Verify third example changed translation but kept symbol
+		await expect(thirdExample.locator('span.fw-bold').first()).toContainText('1 500 $')
 
 		// Check toggle button changed
 		await expect(page.getByRole('button', { name: '🇬🇧 EN → UK' })).toBeVisible()

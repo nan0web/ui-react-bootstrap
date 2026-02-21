@@ -406,7 +406,51 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Складна таблиця з автоконвертацією th/td"
+							label="Таблиця за замовчуванням (клас таблиці автоматично table-striped table-hover)"
+							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { \n      table: {\n        thead: [{ tr: [locale === 'uk' ? "Назва" : "Name", locale === 'uk' ? "Тариф" : "Rate"] }],\n        tbody: [\n          { tr: [locale === 'uk' ? "Стандарт" : "Standard", "10%"] }\n        ]\n      }\n    }\n  ]\n}} />`}
+							yamlCode={{
+								$content: ['Content'],
+								content: [
+									{
+										table: {
+											thead: [
+												{
+													tr: [
+														locale === 'uk' ? 'Назва' : 'Name',
+														locale === 'uk' ? 'Тариф' : 'Rate',
+													],
+												},
+											],
+											tbody: [{ tr: [locale === 'uk' ? 'Стандарт' : 'Standard', '10%'] }],
+										},
+									},
+								],
+							}}
+						>
+							<Blocks.Content
+								doc={{
+									content: [
+										{
+											table: {
+												thead: [
+													{
+														tr: [
+															{ th: locale === 'uk' ? 'Назва' : 'Name' },
+															{ th: locale === 'uk' ? 'Тариф' : 'Rate' },
+														],
+													},
+												],
+												tbody: [{ tr: [locale === 'uk' ? 'Стандарт' : 'Standard', '10%'] }],
+											},
+										},
+									],
+								}}
+								{...sharedProps}
+							/>
+						</Example>
+
+						<Example
+							label="Складна таблиця з кастомним класом"
 							jsxCode={`<Blocks.Content doc={{\n  content: [\n    { h5: locale === 'uk' ? "Таблиця з кастомним класом" : "Table with custom class" },\n    { \n      table: {\n        thead: [{ tr: [locale === 'uk' ? "Назва" : "Name", locale === 'uk' ? "Тариф" : "Rate"] }],\n        tbody: [\n          { tr: [locale === 'uk' ? "Ощадний" : "Savings", "12%"] },\n          { tr: [locale === 'uk' ? "Накопичувальний" : "Accumulative", "14%"] }\n        ]\n      },\n      $class: "table table-dark table-striped mt-3"\n    }\n  ]\n}} />`}
 							yamlCode={{
 								$content: ['Content'],
@@ -574,10 +618,11 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Як об'єкт (href/name/src/title)"
-							jsxCode={`<Blocks.Files \n  locale={locale}\n  title={locale === 'uk' ? "Договори" : "Contracts"}\n  doc={{\n    files: [\n      { href: "/contract.pdf", name: locale === 'uk' ? "Типовий договір" : "Standard contract" }\n    ]\n  }}\n/>`}
+							label="Як об'єкт (перевизначення назви блоку через filesTitle)"
+							jsxCode={`<Blocks.Files \n  locale={locale}\n  doc={{\n    filesTitle: locale === 'uk' ? "Договори" : "Contracts",\n    files: [\n      { href: "/contract.pdf", name: locale === 'uk' ? "Типовий договір" : "Standard contract" }\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Files'],
+								filesTitle: locale === 'uk' ? 'Договори' : 'Contracts',
 								files: [
 									{
 										href: '/contract.pdf',
@@ -588,8 +633,8 @@ export default function Playground({ db }) {
 						>
 							<Blocks.Files
 								locale={locale}
-								title={locale === 'uk' ? 'Договори' : 'Contracts'}
 								doc={{
+									filesTitle: locale === 'uk' ? 'Договори' : 'Contracts',
 									files: [
 										{
 											href: '/contract.pdf',
@@ -624,11 +669,19 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Як об'єкт (value і currency)"
+							label="В об'єкті з літерним кодом (USD, EUR...)"
 							jsxCode={`<Blocks.Price \n  locale={locale} \n  doc={{\n    price: { value: "1 500", currency: "USD" }\n  }} \n/>`}
 							yamlCode={{ $content: ['Price'], price: { value: '1 500', currency: 'USD' } }}
 						>
 							<Blocks.Price locale={locale} doc={{ price: { value: '1 500', currency: 'USD' } }} />
+						</Example>
+
+						<Example
+							label="В об'єкті з символом валюти ($)"
+							jsxCode={`<Blocks.Price \n  locale={locale} \n  doc={{\n    price: { value: "1 500", currency: "$" }\n  }} \n/>`}
+							yamlCode={{ $content: ['Price'], price: { value: '1 500', currency: '$' } }}
+						>
+							<Blocks.Price locale={locale} doc={{ price: { value: '1 500', currency: '$' } }} />
 						</Example>
 					</BlockSection>
 
