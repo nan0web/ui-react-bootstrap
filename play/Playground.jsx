@@ -618,11 +618,11 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="Як об'єкт (перевизначення назви блоку через filesTitle)"
-							jsxCode={`<Blocks.Files \n  locale={locale}\n  doc={{\n    filesTitle: locale === 'uk' ? "Договори" : "Contracts",\n    files: [\n      { href: "/contract.pdf", name: locale === 'uk' ? "Типовий договір" : "Standard contract" }\n    ]\n  }}\n/>`}
+							label="Як об'єкт (перевизначення назви блоку через $files: { title: ... })"
+							jsxCode={`<Blocks.Files \n  locale={locale}\n  doc={{\n    $files: { title: locale === 'uk' ? "Договори" : "Contracts" },\n    files: [\n      { href: "/contract.pdf", name: locale === 'uk' ? "Типовий договір" : "Standard contract" }\n    ]\n  }}\n/>`}
 							yamlCode={{
 								$content: ['Files'],
-								filesTitle: locale === 'uk' ? 'Договори' : 'Contracts',
+								$files: { title: locale === 'uk' ? 'Договори' : 'Contracts' },
 								files: [
 									{
 										href: '/contract.pdf',
@@ -634,7 +634,7 @@ export default function Playground({ db }) {
 							<Blocks.Files
 								locale={locale}
 								doc={{
-									filesTitle: locale === 'uk' ? 'Договори' : 'Contracts',
+									$files: { title: locale === 'uk' ? 'Договори' : 'Contracts' },
 									files: [
 										{
 											href: '/contract.pdf',
@@ -677,11 +677,18 @@ export default function Playground({ db }) {
 						</Example>
 
 						<Example
-							label="В об'єкті з символом валюти ($)"
-							jsxCode={`<Blocks.Price \n  locale={locale} \n  doc={{\n    price: { value: "1 500", currency: "$" }\n  }} \n/>`}
-							yamlCode={{ $content: ['Price'], price: { value: '1 500', currency: '$' } }}
+							label="Як об'єкт з налаштуванням view: symbol ($price: { view: 'symbol' })"
+							jsxCode={`<Blocks.Price \n  locale={locale} \n  doc={{\n    price: { value: "1 500", currency: "USD" },\n    $price: { view: 'symbol' }\n  }} \n/>`}
+							yamlCode={{
+								$content: ['Price'],
+								price: { value: '1 500', currency: 'USD' },
+								$price: { view: 'symbol' },
+							}}
 						>
-							<Blocks.Price locale={locale} doc={{ price: { value: '1 500', currency: '$' } }} />
+							<Blocks.Price
+								locale={locale}
+								doc={{ price: { value: '1 500', currency: 'USD' }, $price: { view: 'symbol' } }}
+							/>
 						</Example>
 					</BlockSection>
 

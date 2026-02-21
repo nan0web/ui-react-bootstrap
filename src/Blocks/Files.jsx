@@ -13,8 +13,8 @@ export function Files({ doc, title, locale = 'uk' }) {
 	if (!files || !Array.isArray(files) || files.length === 0) return null
 	const heading =
 		title ||
-		doc?.filesTitle ||
-		doc?.doc?.filesTitle ||
+		doc?.$files?.title ||
+		doc?.doc?.$files?.title ||
 		(locale === 'uk' ? 'Документи' : 'Documents')
 
 	return (
