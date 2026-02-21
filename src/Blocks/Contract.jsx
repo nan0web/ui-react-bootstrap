@@ -14,8 +14,8 @@ import { renderItem } from '../renderItem.jsx'
  * @param {Object} [props.duty]
  */
 export function Contract({ page, onNavigate, locale, db, globals, duty }) {
-	const contract = page?.page?.contract
-	const nav = page?.$pageNavigator
+	const contract = page?.page?.contract || page?.contract
+	const nav = page?.$pageNavigator || page?.page?.$pageNavigator
 	if (!contract || !Array.isArray(contract)) return null
 	const sharedProps = { locale, page, globals, db, onNavigate, duty }
 	const [navOpen, setNavOpen] = useState(false)

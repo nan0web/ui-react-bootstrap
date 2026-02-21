@@ -14,7 +14,7 @@ import { renderItem } from '../renderItem.jsx'
  * @param {Object} [props.duty]
  */
 export function Content({ page, onNavigate, locale, db, globals, duty }) {
-	const content = page?.page?.content
+	const content = page?.page?.content || page?.content
 	if (!content || !Array.isArray(content) || content.length === 0) return null
 	const sharedProps = { locale, page, globals, db, onNavigate, duty }
 	return (

@@ -6,7 +6,7 @@ import { Blocks } from './Blocks/index.js'
  * a registry or explicitly matched here. We'll map string identifiers to
  * the abstract Blocks export.
  */
-const BlockMap = {
+const getBlockMap = () => ({
 	Description: Blocks.Description,
 	Excerpt: Blocks.Excerpt,
 	Features: Blocks.Features,
@@ -15,7 +15,7 @@ const BlockMap = {
 	Files: Blocks.Files,
 	Price: Blocks.Price,
 	Contract: Blocks.Contract,
-}
+})
 
 /**
  * Converts a legacy `$layout` directive into a `$content` array.
@@ -98,7 +98,7 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 		}
 
 		// Standard layout micro-components (string variants mapping to Blocks)
-		const BlockComponent = BlockMap[item]
+		const BlockComponent = getBlockMap()[item]
 		if (BlockComponent) {
 			return <BlockComponent key={index} {...sharedProps} />
 		}
@@ -258,7 +258,7 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 		)
 
 	// Custom Components mapped to Blocks
-	const CustomBlockComponent = BlockMap[key]
+	const CustomBlockComponent = getBlockMap()[key]
 	if (CustomBlockComponent) {
 		return <CustomBlockComponent key={index} {...sharedProps} />
 	}

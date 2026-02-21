@@ -8,7 +8,7 @@ import React from 'react'
  * @param {string} props.locale
  */
 export function Price({ page, locale }) {
-	const price = page?.page?.price
+	const price = page?.page?.price || page?.price
 	if (!price) return null
 	return (
 		<div className="container container-max py-3">
