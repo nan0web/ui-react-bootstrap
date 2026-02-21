@@ -1,30 +1,37 @@
 {
 	"name": "@nan0web/ui-react-bootstrap",
 	"version": "0.1.0",
+	"type": "module",
 	"description": "Bootstrap integration for @nan0web/ui-react – declarative UI with React Bootstrap components and themes.",
 	"main": "./src/index.jsx",
 	"types": "./types/index.d.ts",
 	"files": [
 		"src/",
 		"types/",
-		"playground/",
+		"play/",
+		"data/",
+		"public/",
 		".datasets/",
-		"CHANGELOG.md"
+		"CHANGELOG.md",
+		"scripts/"
 	],
 	"scripts": {
+		"build": "tsc",
 		"dev": "vite",
+		"test": "npm run test:js && npm run test:jsx",
 		"test:js": "node --test \"src/**/*.test.js\"",
 		"test:jsx": "vitest run",
-		"test:docs": "node --test src/README.md.js",
+		"test:docs": "vitest run src/README.md.jsx",
 		"test:status": "nan0test status --hide-name",
 		"test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
 		"test:release": "node --test \"releases/**/*.test.js\"",
-		"build": "tsc",
+		"test:e2e": "npx playwright test",
+		"play": "vite --port 4247",
 		"precommit": "npm test",
-		"prepublishOnly": "npm test && npm run build",
-		"playground": "vite"
+		"prepublishOnly": "npm test && npm run build && npm run build-data"
 	},
 	"peerDependencies": {
+		"@nan0web/core": "^1.0.0",
 		"@nan0web/db-browser": "^1.0.0",
 		"@nan0web/ui-core": "^1.0.0",
 		"@nan0web/ui-react": "^1.0.0",
@@ -34,20 +41,33 @@
 		"react-router-dom": "^7.9.0"
 	},
 	"devDependencies": {
-		"@nan0web/db-browser": "workspace:*",
-		"@nan0web/log": "workspace:*",
-		"@nan0web/test": "workspace:*",
-		"@testing-library/jest-dom": "^6.8.0",
+		"@nan0web/core": "link:../core",
+		"@nan0web/db-browser": "link:../db-browser",
+		"@nan0web/log": "link:../log",
+		"@nan0web/test": "link:../test",
+		"@nan0web/ui-react": "link:../ui-react",
+		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
+		"@testing-library/user-event": "^14.6.1",
+		"@playwright/test": "^1.50.1",
+		"@vitejs/plugin-react": "^5.0.4",
+		"@vitest/coverage-v8": "^3.2.4",
 		"@vitest/ui": "^1.6.1",
-		"typescript": "^5.9.2",
-		"vite": "^7.1.7",
+		"bootstrap": "^5.3.8",
+		"js-yaml": "^4.1.0",
+		"react-bootstrap": "^2.10.10",
+		"sass": "^1.93.2",
+		"typescript": "^5.9.3",
+		"vite": "^7.1.9",
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"@nan0web/ui-core": "workspace:*",
-		"@nan0web/ui-react": "workspace:*",
-		"react-router-dom": "^7.9.2"
+		"@nan0web/ui-core": "link:../ui-core",
+		"@nan0web/ui-react": "link:../ui-react",
+		"@react-input/mask": "^2.0.4",
+		"react-icons": "^5.5.0",
+		"react-router": "^7.12.0",
+		"react-router-dom": "^7.12.0"
 	},
 	"repository": {
 		"type": "git",
@@ -58,7 +78,9 @@
 		"react",
 		"bootstrap",
 		"declarative",
-		"theme"
+		"theme",
+		"scss",
+		"yaml"
 	],
 	"author": "YaRaSLove <support@yaro.page>",
 	"license": "ISC",

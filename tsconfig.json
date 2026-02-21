@@ -9,16 +9,22 @@
 		"allowImportingTsExtensions": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"noEmit": true,
 		"jsx": "react-jsx",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
+		"strict": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noFallthroughCasesInSwitch": false,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"allowJs": true,
+		"checkJs": false,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "./types",
+		"declarationDir": "./types"
 	},
-	"include": ["src", "types"]
+	"include": ["src/**/*.js", "src/**/*.jsx"],
+	"exclude": ["node_modules", "src/**/*.test.js", "src/**/*.test.jsx", "src/README.md.js", "types"]
 }

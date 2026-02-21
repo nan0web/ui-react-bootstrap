@@ -1,17 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal as BootstrapModal } from 'react-bootstrap'
-import { useUI } from "@nan0web/ui-react"
+import { useUI } from '@nan0web/ui-react'
 
 export default function Modal({ isOpen, onClose, children, ...props }) {
 	const { theme } = useUI()
-	const config = theme.organisms.Modal
-
+	if (theme.name === 'bootstrap') {
+		// Disable ui-core theme for Bootstrap, rely on default styles
+		return (
+			<BootstrapModal show={isOpen} onHide={onClose} {...props}>
+				<BootstrapModal.Body>{children}</BootstrapModal.Body>
+			</BootstrapModal>
+		)
+	}
+	// Fallback
+	const config = theme.organisms?.Modal || {}
 	return (
 		<BootstrapModal show={isOpen} onHide={onClose} {...props}>
-			<BootstrapModal.Body style={{ ...config }}>
-				{children}
-			</BootstrapModal.Body>
+			<BootstrapModal.Body style={config}>{children}</BootstrapModal.Body>
 		</BootstrapModal>
 	)
 }

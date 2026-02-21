@@ -14,28 +14,45 @@ const variantMap = {
 	caption: 'span',
 }
 
-export default function Typography({ variant = 'body', children, ...props }) {
+export default function Typography({ variant = 'body', children, style, ...props }) {
 	const { theme } = useUI()
+	const bootstrapVars = theme.name === 'bootstrap'
+
+	const defaultBody = bootstrapVars
+		? {
+				fontSize: 'var(--bs-body-font-size)',
+				fontWeight: 'var(--bs-body-font-weight)',
+				color: 'var(--bs-body-color)',
+				lineHeight: 'var(--bs-body-line-height)',
+			}
+		: {
+				fontSize: '1rem',
+				fontWeight: 'normal',
+			}
+
 	const { variants = {} } = theme.atoms?.Typography ?? {}
 
-	const defaultBody = {
-		fontSize: '1rem',
-		fontWeight: 'normal'
-	}
-	const {
-		fontSize = defaultBody.fontSize,
-		fontWeight = defaultBody.fontWeight
-	} = variants[variant] ?? variants.body ?? defaultBody
+	const variantStyles = variants[variant] ?? variants.body ?? defaultBody
+	const fontSize = variantStyles.fontSize ?? defaultBody.fontSize
+	const fontWeight = variantStyles.fontWeight ?? defaultBody.fontWeight
+	const color = bootstrapVars ? 'var(--bs-body-color)' : undefined
 
 	const Component = variantMap[variant] || 'p'
-	const style = {
+	const mergedStyle = {
 		fontSize,
 		fontWeight,
-		...props.style,
+		color,
+		...(bootstrapVars
+			? {
+					lineHeight: 'var(--bs-body-line-height)',
+					fontFamily: 'var(--bs-font-sans-serif)',
+				}
+			: {}),
+		...style,
 	}
 
 	return (
-		<Component style={style} {...props}>
+		<Component style={mergedStyle} {...props}>
 			{children}
 		</Component>
 	)
