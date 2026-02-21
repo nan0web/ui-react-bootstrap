@@ -6,13 +6,13 @@ import React from 'react'
  * @param {Object} props
  * @param {Object} props.page
  */
-export function Files({ page }) {
+export function Files({ page, locale = 'uk' }) {
 	const files = page?.files
 	if (!files || !Array.isArray(files) || files.length === 0) return null
 	return (
 		<section className="bg-info bg-gradient bg-opacity-10 py-4">
 			<div className="container container-max">
-				<h5 className="fw-bold mb-3">📎 Документи</h5>
+				<h5 className="fw-bold mb-3">📎 {locale === 'uk' ? 'Документи' : 'Documents'}</h5>
 				<ul className="list-unstyled mb-0">
 					{files.map((f, i) => {
 						const href = f.src || f.href || '#'
