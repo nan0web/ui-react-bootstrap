@@ -78,10 +78,32 @@ function BlockSection({ id, title, description, children }) {
 
 export default function Playground({ db }) {
 	const [locale, setLocale] = useState('uk')
+	const [theme, setTheme] = useState(
+		typeof document !== 'undefined'
+			? document.documentElement.getAttribute('data-bs-theme') || 'light'
+			: 'light',
+	)
+
 	const toggleLocale = () => setLocale((prev) => (prev === 'uk' ? 'en' : 'uk'))
+
+	const handleThemeToggle = (newTheme) => {
+		setTheme(newTheme)
+		if (typeof document !== 'undefined') {
+			if (newTheme === 'dark') document.documentElement.setAttribute('data-bs-theme', 'dark')
+			else document.documentElement.removeAttribute('data-bs-theme')
+		}
+	}
+
 	const sharedProps = { db, locale }
 
 	const blocks = [
+		'Page',
+		'Nav',
+		'Sidebar',
+		'Callout',
+		'Markdown',
+		'ThemeToggle',
+		'LangSelect',
 		'Description',
 		'Excerpt',
 		'Features',
@@ -90,6 +112,7 @@ export default function Playground({ db }) {
 		'Files',
 		'Price',
 		'Contract',
+		'Search',
 	]
 
 	return (
@@ -161,6 +184,187 @@ export default function Playground({ db }) {
 				</div>
 
 				<div className="container-fluid px-3 px-md-4 pb-5">
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  NEW BLOCKS                                       */}
+					{/* ═══════════════════════════════════════════════════ */}
+
+					<BlockSection
+						id="block-page"
+						title="Blocks.Page"
+						description="Структурний макет сторінки (Page). Контейнер для складної верстки аркуша."
+					>
+						<Example
+							label="Структура сторінки"
+							jsxCode={`<Blocks.Page />`}
+							yamlCode={{ $content: ['Page'], page: 'Placeholder' }}
+						>
+							<div className="p-3 border rounded bg-white text-center text-muted">
+								Page block is structural and delegates to Layout/Renderer.
+							</div>
+						</Example>
+					</BlockSection>
+
+					<BlockSection id="block-nav" title="Blocks.Nav" description="Верхня навігація (Navbar).">
+						<Example
+							label="Головна навігація"
+							jsxCode={`<Blocks.Nav brand={{ title: "Bank" }} items={[{ title: "Home" }]} />`}
+							yamlCode={{ $content: ['Nav'], brand: { title: 'Bank' }, items: [{ title: 'Home' }] }}
+						>
+							<Blocks.Nav
+								brand={{ title: 'Bank Shell', url: '#' }}
+								items={[
+									{ title: locale === 'uk' ? 'Головна' : 'Home', url: '#' },
+									{ title: locale === 'uk' ? 'Про нас' : 'About', url: '#' },
+									{
+										title: locale === 'uk' ? 'Послуги' : 'Services',
+										children: [{ title: 'Депозити' }, { title: 'Кредити' }],
+									},
+								]}
+							/>
+						</Example>
+					</BlockSection>
+
+					<BlockSection
+						id="block-sidebar"
+						title="Blocks.Sidebar"
+						description="Бокове меню (Sidebar) для налаштувань або документації."
+					>
+						<Example
+							label="Ієрархічне меню"
+							jsxCode={`<Blocks.Sidebar title="Settings" items={[{ title: "Profile", url: "#" }]} />`}
+							yamlCode={{
+								$content: ['Sidebar'],
+								title: 'Menu',
+								items: [{ title: 'Profile', url: '#' }],
+							}}
+						>
+							<div style={{ maxWidth: '300px' }}>
+								<Blocks.Sidebar
+									title={locale === 'uk' ? 'Налаштування' : 'Settings'}
+									items={[
+										{
+											title: locale === 'uk' ? 'Профіль' : 'Profile',
+											url: '#profile',
+											active: true,
+										},
+										{ title: locale === 'uk' ? 'Безпека' : 'Security', url: '#security' },
+										{ title: locale === 'uk' ? 'Сповіщення' : 'Notifications', url: '#alerts' },
+									]}
+								/>
+							</div>
+						</Example>
+					</BlockSection>
+					<BlockSection
+						id="block-callout"
+						title="Blocks.Callout"
+						description="Блоки уваги (Alerts). Можуть приймати content або children."
+					>
+						<Example
+							label="Всі типи (Info, Warning, Danger, Success)"
+							jsxCode={`<Blocks.Callout type="info">This is an informational message.</Blocks.Callout>\n<Blocks.Callout type="warning">This is a warning message.</Blocks.Callout>\n<Blocks.Callout type="danger">This is a critical error message.</Blocks.Callout>\n<Blocks.Callout type="success">Operation completed successfully.</Blocks.Callout>`}
+							yamlCode={{
+								$content: [
+									{ Callout: 'This is an informational message.', type: 'info' },
+									{ Callout: 'This is a warning message.', type: 'warning' },
+									{ Callout: 'This is a critical error message.', type: 'danger' },
+									{ Callout: 'Operation completed successfully.', type: 'success' },
+								],
+							}}
+						>
+							<Blocks.Callout type="info" className="mb-3">
+								This is an informational message.
+							</Blocks.Callout>
+							<Blocks.Callout type="warning" className="mb-3">
+								This is a warning message.
+							</Blocks.Callout>
+							<Blocks.Callout type="danger" className="mb-3">
+								This is a critical error message.
+							</Blocks.Callout>
+							<Blocks.Callout type="success">Operation completed successfully.</Blocks.Callout>
+						</Example>
+					</BlockSection>
+
+					<BlockSection
+						id="block-markdown"
+						title="Blocks.Markdown"
+						description="Рендер готового HTML або Markdown."
+					>
+						<Example
+							label="Рендер HTML та Markup"
+							jsxCode={`<Blocks.Markdown html="<strong>Bold HTML</strong> and <em>italic</em>" />\n<Blocks.Markdown><strong>Bold Children</strong></Blocks.Markdown>`}
+							yamlCode={{
+								$content: [{ Markdown: '<strong>Bold HTML</strong> and <em>italic</em>' }],
+							}}
+						>
+							<Blocks.Markdown
+								html="<strong>Bold HTML</strong> and <a href='#'>link</a> rendered via dangerouslySetInnerHTML."
+								className="mb-3"
+							/>
+							<Blocks.Markdown>
+								<strong>Bold Children</strong> rendered directly via React children.
+							</Blocks.Markdown>
+						</Example>
+					</BlockSection>
+
+					<BlockSection
+						id="block-themetoggle"
+						title="Blocks.ThemeToggle"
+						description="Перемикач теми (світла/темна)."
+					>
+						<Example
+							label="Компонент в дії"
+							jsxCode={`<Blocks.ThemeToggle theme={theme} onToggle={setTheme} />`}
+							yamlCode={{
+								$content: ['ThemeToggle'],
+							}}
+						>
+							<div className="d-flex align-items-center gap-3 bg-white p-3 border rounded">
+								<span className="text-muted small">
+									Поточна тема:{' '}
+									<strong>
+										{typeof document !== 'undefined'
+											? document.documentElement.getAttribute('data-bs-theme') || 'light'
+											: 'light'}
+									</strong>
+								</span>
+								<Blocks.ThemeToggle
+									theme={
+										typeof document !== 'undefined'
+											? document.documentElement.getAttribute('data-bs-theme') || 'light'
+											: 'light'
+									}
+									onToggle={(t) => {
+										if (t === 'dark') document.documentElement.setAttribute('data-bs-theme', 'dark')
+										else document.documentElement.removeAttribute('data-bs-theme')
+										// Force re-render of this specific part
+										setLocale(locale)
+									}}
+								/>
+							</div>
+						</Example>
+					</BlockSection>
+
+					<BlockSection
+						id="block-langselect"
+						title="Blocks.LangSelect"
+						description="Перемикач мови (локалі)."
+					>
+						<Example
+							label="Віджет вибору мови"
+							jsxCode={`<Blocks.LangSelect locale={locale} onChange={setLocale} />`}
+							yamlCode={{
+								$content: ['LangSelect'],
+							}}
+						>
+							<div className="d-flex align-items-center gap-3 bg-white p-3 border rounded">
+								<span className="text-muted small">
+									Поточна мова: <strong>{locale}</strong>
+								</span>
+								<Blocks.LangSelect locale={locale} onChange={setLocale} />
+							</div>
+						</Example>
+					</BlockSection>
+
 					{/* ═══════════════════════════════════════════════════ */}
 					{/*  DESCRIPTION                                       */}
 					{/* ═══════════════════════════════════════════════════ */}
@@ -775,6 +979,147 @@ export default function Playground({ db }) {
 									],
 								}}
 								{...sharedProps}
+							/>
+						</Example>
+					</BlockSection>
+
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  SEARCH                                            */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
+						id="block-search"
+						title="Blocks.Search"
+						description="Універсальний рядок пошуку та результати. Завантажує індекс та фільтрує миттєво."
+					>
+						<Example
+							label="Миттєвий локальний пошук (з 12+ елементів)"
+							jsxCode={`<Blocks.Search \n  inline={true} \n  searchIndex={searchIndexData} \n/>`}
+							yamlCode={{
+								$content: ['Search'],
+								searchIndexUrl: '/api/search.json', // Приклад (в реальності indexUrl)
+								inline: true,
+							}}
+						>
+							<Blocks.Search
+								inline={true}
+								t={(k) => {
+									const uk = {
+										searchPlaceholder: 'Почніть вводити для пошуку...',
+										searchBtn: 'Знайти',
+										resultsFound: 'результатів',
+										noResults: 'Нічого не знайдено',
+										searchReadMore: 'Детальніше',
+									}
+									const en = {
+										searchPlaceholder: 'Start typing to search...',
+										searchBtn: 'Search',
+										resultsFound: 'results found',
+										noResults: 'No results found',
+										searchReadMore: 'Read more',
+									}
+									return locale === 'uk' ? uk[k] : en[k]
+								}}
+								searchIndex={[
+									{
+										title: locale === 'uk' ? 'Депозит "Прибутковий"' : 'Deposit "Profitable"',
+										desc:
+											locale === 'uk'
+												? 'Високі відсотки, надійне збереження.'
+												: 'High interest, reliable storage.',
+										url: '#1',
+									},
+									{
+										title: locale === 'uk' ? 'Депозит "Перспектива"' : 'Deposit "Perspective"',
+										desc:
+											locale === 'uk'
+												? 'Можливість поповнення протягом строку.'
+												: 'Refill allowed during term.',
+										url: '#2',
+									},
+									{
+										title: locale === 'uk' ? 'Депозит "Ощадний"' : 'Deposit "Savings"',
+										desc:
+											locale === 'uk'
+												? 'Вільний доступ до коштів без втрати відсотків.'
+												: 'Free access to funds without losing interest.',
+										url: '#3',
+									},
+									{
+										title: locale === 'uk' ? 'Кредит готівкою' : 'Cash Loan',
+										desc:
+											locale === 'uk'
+												? 'Гроші на будь-які цілі під низький відсоток.'
+												: 'Money for any purpose at low interest.',
+										url: '#4',
+									},
+									{
+										title:
+											locale === 'uk'
+												? 'Кредитна картка "Універсальна"'
+												: 'Credit Card "Universal"',
+										desc:
+											locale === 'uk'
+												? 'Пільговий період до 55 днів на всі покупки.'
+												: 'Grace period up to 55 days on all purchases.',
+										url: '#5',
+									},
+									{
+										title: locale === 'uk' ? 'Автокредитування' : 'Auto Loan',
+										desc:
+											locale === 'uk'
+												? 'Нове авто з салону в кредит.'
+												: 'New car from salon on credit.',
+										url: '#6',
+									},
+									{
+										title: locale === 'uk' ? 'Іпотека "Власний дім"' : 'Mortgage "Own Home"',
+										desc:
+											locale === 'uk'
+												? 'Доступне житловий кредит на 20 років.'
+												: 'Affordable housing loan for 20 years.',
+										url: '#7',
+									},
+									{
+										title: locale === 'uk' ? 'Рахунок ФОП' : 'Entrepreneur Account',
+										desc:
+											locale === 'uk'
+												? 'Зручне ведення бізнесу та онлайн-бухгалтерія.'
+												: 'Convenient business management and online accounting.',
+										url: '#8',
+									},
+									{
+										title: locale === 'uk' ? 'Зарплатний проект' : 'Payroll Project',
+										desc:
+											locale === 'uk'
+												? 'Безкоштовний випуск карток для співробітників.'
+												: 'Free card issuance for employees.',
+										url: '#9',
+									},
+									{
+										title: locale === 'uk' ? 'Корпоративна картка' : 'Corporate Card',
+										desc:
+											locale === 'uk'
+												? 'Оплата витрат компанії однією карткою.'
+												: 'Payment of company expenses with one card.',
+										url: '#10',
+									},
+									{
+										title: locale === 'uk' ? 'Страхування життя' : 'Life Insurance',
+										desc:
+											locale === 'uk'
+												? 'Захист вашої родини від непередбачуваних витрат.'
+												: 'Protection of your family from unforeseen expenses.',
+										url: '#11',
+									},
+									{
+										title: locale === 'uk' ? 'Страхування авто (КАСКО)' : 'Auto Insurance (CASCO)',
+										desc:
+											locale === 'uk'
+												? 'Повний захист вашого автомобіля.'
+												: 'Full protection of your car.',
+										url: '#12',
+									},
+								]}
 							/>
 						</Example>
 					</BlockSection>

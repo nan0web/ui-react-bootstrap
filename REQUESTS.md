@@ -16,7 +16,6 @@ This visual pattern should be a standard Bootstrap component for any sortable li
 
 ```jsx
 import { SortableList } from '@nan0web/ui-react-bootstrap'
-
 ;<SortableList
   items={models}
   renderItem={(item, idx) => (
@@ -57,3 +56,60 @@ import { SortableList } from '@nan0web/ui-react-bootstrap'
 ```
 
 **Reference Implementation**: `apps/@/industrialbank/branches/src/ui-react-bootstrap/App.jsx` (lines ~520-550, chat settings panel model reorder block).
+
+---
+
+## Фаза 2: Макетні та Універсальні Блоки
+
+Згідно з `UNIVERSAL_BLOCKS_SPEC.md`, наступні стандартні компоненти не мають банківської специфіки і повинні бути реалізовані в `@nan0web/ui-react-bootstrap`.
+
+### Blocks.SearchWidget — Універсальний Пошук
+
+**Target**: `src/components/SearchWidget.jsx` (або `src/Blocks/Search.jsx`)
+**Status**: NEW
+**Date**: 2026-02-21
+**Origin**: Legacy Bank Shell (`themes/industrialbank/views/_/modal/search.ejs`, `src/components/SearchModal.jsx`)
+**Problem**:
+Історично банк мав пошук з результатами. Необхідно зробити універсальний `SearchWidget` (виклик модального вікна з результатами або inline пошук), який рендериться стандартно в Bootstrap і отримує результати пошуку через `props`.
+
+### Blocks.Nav — Верхня Навігація
+
+**Target**: `src/Blocks/Nav.jsx`
+**Status**: NEW
+**Problem**:
+Рендерить меню (navbar) на основі AST дерева `$nav`. Підтримує випадаючі списки та мобільний "гамбургер". Має замінити монолітний `ShellHeader`.
+
+### Blocks.Sidebar — Бокове Меню
+
+**Target**: `src/Blocks/Sidebar.jsx`
+**Status**: NEW
+**Problem**:
+Рендерить деревоподібне бокове меню (наприклад, для документації або складних розділів) на основі `$sidebar`.
+
+### Blocks.Callout — Блоки Уваги (Alerts)
+
+**Target**: `src/Blocks/Callout.jsx`
+**Status**: NEW
+**Problem**:
+Блок для Warning, Info, Tip. Мапиться на Bootstrap `Alert` (`alert-info`, `alert-warning` тощо) на основі `$callout.type`.
+
+### Blocks.Markdown — Рендер Прози
+
+**Target**: `src/Blocks/Markdown.jsx`
+**Status**: NEW
+**Problem**:
+Очищений контейнер для виводу Markdown-контенту, який був попередньо згенерований (або генерується на льоту) у HTML.
+
+### Blocks.ThemeToggle та Blocks.LangSelect — Перемикачі
+
+**Target**: `src/Blocks/ThemeToggle.jsx`, `src/Blocks/LangSelect.jsx`
+**Status**: NEW
+**Problem**:
+Стандартизовані віджети для зміни `data-bs-theme` (День/Ніч) та зміни локалі `$locale`.
+
+### Blocks.Page — Головний Макет (Layout)
+
+**Target**: `src/Blocks/Page.jsx`
+**Status**: NEW
+**Problem**:
+Структурний макет (Skeleton), який може включати `Nav`, `Sidebar` та обгортати основний `$content` (Main). Виконує роль контейнера для складної верстки аркуша.

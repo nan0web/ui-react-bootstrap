@@ -1,12 +1,15 @@
 /**
  * Bootstrap Button wrapper for declarative UI.
  */
-declare function Button({ variant, size, outline, disabled, children, style, ...props }: {
+declare function Button({ variant, size, outline, disabled, isLoading, icon, iconRight, children, style, ...props }: {
     [x: string]: any;
     variant?: string;
     size?: string;
     outline?: boolean;
     disabled?: boolean;
+    isLoading?: boolean;
+    icon: any;
+    iconRight?: boolean;
     children: any;
     style: any;
 }): import("react/jsx-runtime").JSX.Element;

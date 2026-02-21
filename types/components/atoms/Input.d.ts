@@ -1,10 +1,12 @@
 /**
- * Bootstrap Input wrapper.
+ * Bootstrap Input wrapper with mask support.
  */
-declare function Input({ type, style, ...props }: {
+declare function Input({ type, mask, label, help, ...props }: {
     [x: string]: any;
     type?: string;
-    style: any;
+    mask: any;
+    label: any;
+    help: any;
 }): import("react/jsx-runtime").JSX.Element;
 declare namespace Input {
     namespace propTypes {

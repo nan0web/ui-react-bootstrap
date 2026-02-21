@@ -114,4 +114,38 @@ test.describe('Catalog Playground E2E Tests', () => {
 		// Check toggle button changed
 		await expect(page.getByRole('button', { name: '🇬🇧 EN → UK' })).toBeVisible()
 	})
+
+	test('should render new phase 2 components', async ({ page }) => {
+		// Callout
+		const calloutBlock = page.locator('#block-callout')
+		await expect(calloutBlock).toBeVisible()
+		await expect(calloutBlock.getByText('This is a critical error message.').first()).toBeVisible()
+
+		// Markdown
+		const mdBlock = page.locator('#block-markdown')
+		await expect(mdBlock).toBeVisible()
+		const boldElement = mdBlock.locator('strong').filter({ hasText: /bold/i }).first()
+		await expect(boldElement).toBeVisible()
+
+		// ThemeToggle
+		const themeBlock = page.locator('#block-themetoggle')
+		await expect(themeBlock).toBeVisible()
+		const toggleBtns = themeBlock.locator('button[aria-label="Toggle theme"]')
+		await expect(toggleBtns).toHaveCount(1)
+
+		// LangSelect
+		const langBlock = page.locator('#block-langselect')
+		await expect(langBlock).toBeVisible()
+		await expect(
+			langBlock.locator('button.dropdown-toggle').filter({ hasText: 'UK' }),
+		).toBeVisible()
+
+		// SearchWidget
+		const searchBlock = page.locator('#block-search')
+		await expect(searchBlock).toBeVisible()
+		const searchInput = searchBlock.locator('input[type="search"]').first()
+		await expect(searchInput).toHaveValue('')
+		await searchInput.fill('депозит')
+		await expect(searchBlock.getByText('Депозит "Прибутковий"').first()).toBeVisible()
+	})
 })

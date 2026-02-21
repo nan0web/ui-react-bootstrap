@@ -49,7 +49,7 @@ const renderers = new Map([
 // Register Bootstrap theme (disables ui-core styles to rely on Bootstrap SCSS)
 /**
  * @param {string | Object} themeNameOrConfig
- * @returns {Theme}
+ * @returns {any}
  */
 const getUserTheme = (themeNameOrConfig) => {
 	if (themeNameOrConfig === 'bootstrap') return BootstrapTheme
