@@ -194,12 +194,37 @@ export default function Playground({ db }) {
 						description="Структурний макет сторінки (Page). Контейнер для складної верстки аркуша."
 					>
 						<Example
-							label="Структура сторінки"
-							jsxCode={`<Blocks.Page />`}
-							yamlCode={{ $content: ['Page'], page: 'Placeholder' }}
+							label="Повноцінна сторінка з контентом"
+							jsxCode={`<Blocks.Page>\n  <Blocks.Description doc={{ description: "Main page text" }} />\n</Blocks.Page>`}
+							yamlCode={{ $content: ['Page'], page: [{ Description: 'Main page text' }] }}
 						>
-							<div className="p-3 border rounded bg-white text-center text-muted">
-								Page block is structural and delegates to Layout/Renderer.
+							<div
+								className="p-3 border rounded mb-3 text-center text-muted"
+								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
+							>
+								Page block renders multiple blocks in a column inside Layout/Renderer.
+								<div
+									className="mt-3 p-3 border rounded shadow-sm text-start"
+									style={{ backgroundColor: 'var(--bs-body-bg)' }}
+								>
+									<Blocks.Description
+										doc={{
+											description: locale === 'uk' ? 'Текст основної сторінки' : 'Main page text',
+										}}
+									/>
+								</div>
+							</div>
+						</Example>
+						<Example
+							label="Порожня сторінка (Placeholder)"
+							jsxCode={`<Blocks.Page />`}
+							yamlCode={{ $content: ['Page'] }}
+						>
+							<div
+								className="p-3 border rounded text-center text-muted"
+								style={{ backgroundColor: 'var(--bs-tertiary-bg)' }}
+							>
+								Empty Page Block Placeholder
 							</div>
 						</Example>
 					</BlockSection>
@@ -222,6 +247,13 @@ export default function Playground({ db }) {
 								]}
 							/>
 						</Example>
+						<Example
+							label="Тільки Логотип (Без меню)"
+							jsxCode={`<Blocks.Nav brand={{ title: "Brand Only" }} items={[]} />`}
+							yamlCode={{ $content: ['Nav'], brand: { title: 'Brand Only' } }}
+						>
+							<Blocks.Nav brand={{ title: 'Simple Logo', url: '#' }} items={[]} />
+						</Example>
 					</BlockSection>
 
 					<BlockSection
@@ -230,7 +262,7 @@ export default function Playground({ db }) {
 						description="Бокове меню (Sidebar) для налаштувань або документації."
 					>
 						<Example
-							label="Ієрархічне меню"
+							label="Ієрархічне меню з заголовком"
 							jsxCode={`<Blocks.Sidebar title="Settings" items={[{ title: "Profile", url: "#" }]} />`}
 							yamlCode={{
 								$content: ['Sidebar'],
@@ -249,6 +281,23 @@ export default function Playground({ db }) {
 										},
 										{ title: locale === 'uk' ? 'Безпека' : 'Security', url: '#security' },
 										{ title: locale === 'uk' ? 'Сповіщення' : 'Notifications', url: '#alerts' },
+									]}
+								/>
+							</div>
+						</Example>
+						<Example
+							label="Просте меню без заголовка"
+							jsxCode={`<Blocks.Sidebar items={[{ title: "Option 1" }, { title: "Option 2" }]} />`}
+							yamlCode={{
+								$content: ['Sidebar'],
+								items: [{ title: 'Option 1' }, { title: 'Option 2' }],
+							}}
+						>
+							<div style={{ maxWidth: '300px' }}>
+								<Blocks.Sidebar
+									items={[
+										{ title: locale === 'uk' ? 'Опція 1' : 'Option 1', url: '#' },
+										{ title: locale === 'uk' ? 'Опція 2' : 'Option 2', url: '#' },
 									]}
 								/>
 							</div>
@@ -993,10 +1042,10 @@ export default function Playground({ db }) {
 					>
 						<Example
 							label="Миттєвий локальний пошук (з 12+ елементів)"
-							jsxCode={`<Blocks.Search \n  inline={true} \n  searchIndex={searchIndexData} \n/>`}
+							jsxCode={`<Blocks.Search \n  inline={true} \n  index={searchIndexData} \n/>`}
 							yamlCode={{
 								$content: ['Search'],
-								searchIndexUrl: '/api/search.json', // Приклад (в реальності indexUrl)
+								index: '/api/search.jsonl',
 								inline: true,
 							}}
 						>
@@ -1019,7 +1068,7 @@ export default function Playground({ db }) {
 									}
 									return locale === 'uk' ? uk[k] : en[k]
 								}}
-								searchIndex={[
+								index={[
 									{
 										title: locale === 'uk' ? 'Депозит "Прибутковий"' : 'Deposit "Profitable"',
 										desc:

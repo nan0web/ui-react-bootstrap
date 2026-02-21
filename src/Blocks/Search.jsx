@@ -7,27 +7,33 @@ export const Search = ({
 	inline = false,
 	onClose,
 	results = [], // Explicit results (overrides local search)
-	searchIndex = [], // Full list of items to search through locally
-	indexUrl = null, // URL to fetch searchIndex from upon focus
+	index = null, // Can be array of objects or URL (string)
 	query: initialQuery = '',
 	onSearch,
 	t = (k) => k,
 	...props
 }) => {
 	const [query, setQuery] = useState(initialQuery)
-	const [localIndex, setLocalIndex] = useState(searchIndex)
-	const [indexLoaded, setIndexLoaded] = useState(searchIndex.length > 0)
+	const initialLocalIndex = Array.isArray(index) ? index : []
+	const [localIndex, setLocalIndex] = useState(initialLocalIndex)
+	const [indexLoaded, setIndexLoaded] = useState(initialLocalIndex.length > 0)
 	const [loading, setLoading] = useState(false)
 
-	// Fetch index on focus if indexUrl is provided
+	// Fetch index on focus if index is a URL
 	const handleFocus = async () => {
-		if (indexUrl && !indexLoaded && !loading) {
+		if (typeof index === 'string' && !indexLoaded && !loading) {
 			setLoading(true)
 			try {
-				const res = await fetch(indexUrl)
+				const res = await fetch(index)
 				if (res.ok) {
-					const data = await res.json()
-					setLocalIndex(data)
+					if (index.endsWith('.jsonl')) {
+						const text = await res.text()
+						const data = text.split('\n').filter(Boolean).map(JSON.parse)
+						setLocalIndex(data)
+					} else {
+						const data = await res.json()
+						setLocalIndex(data)
+					}
 				}
 			} catch (e) {
 				console.error('Failed to load search index', e)
@@ -68,7 +74,7 @@ export const Search = ({
 	const isSearching = !!query.trim()
 	const resultCount = displayedResults.length
 
-	const SearchContent = () => (
+	const searchContent = (
 		<div className="search-body w-100">
 			<Form className="input-group mb-4" onSubmit={handleSubmit}>
 				<Form.Control
@@ -167,7 +173,7 @@ export const Search = ({
 	if (inline) {
 		return (
 			<div className="search-widget" {...props}>
-				<SearchContent />
+				{searchContent}
 			</div>
 		)
 	}
@@ -181,7 +187,7 @@ export const Search = ({
 			</Modal.Header>
 			<Modal.Body className="p-4 p-md-5 d-flex justify-content-center pt-0">
 				<div className="container" style={{ maxWidth: '800px' }}>
-					<SearchContent />
+					{searchContent}
 				</div>
 			</Modal.Body>
 		</Modal>
