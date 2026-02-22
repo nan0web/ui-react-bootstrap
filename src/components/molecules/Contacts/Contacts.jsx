@@ -52,7 +52,7 @@ const Contacts = ({ items = [], title, map, className = '' }) => {
 			<div className="container">
 				{title && <h2 className="display-6 fw-bold mb-5">{title}</h2>}
 				{map && (
-					<div className="mb-5 d-flex align-items-center gap-3 p-4 rounded-4 bg-light border">
+					<div className="mb-5 d-flex align-items-center gap-3 p-4 rounded-4 bg-body-secondary border">
 						<Icon name="pin" size={40} className="text-primary" />
 						<div>
 							<h4 className="fw-bold mb-1">{map.title || 'Наш офіс'}</h4>

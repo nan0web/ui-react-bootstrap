@@ -20,22 +20,22 @@ const SocialLinks = ({ social, t }) => {
 			<h6 className="fw-bold mb-3">{t('Ми в соціальних мережах')}</h6>
 			<nav className="d-flex gap-3 flex-wrap">
 				{social.telegram && (
-					<a href={social.telegram} target="_blank" className="text-dark fs-4" title="Telegram">
+					<a href={social.telegram} target="_blank" className="text-body fs-4" title="Telegram">
 						<BsTelegram />
 					</a>
 				)}
 				{social.facebook && (
-					<a href={social.facebook} target="_blank" className="text-dark fs-4" title="Facebook">
+					<a href={social.facebook} target="_blank" className="text-body fs-4" title="Facebook">
 						<BsFacebook />
 					</a>
 				)}
 				{social.instagram && (
-					<a href={social.instagram} target="_blank" className="text-dark fs-4" title="Instagram">
+					<a href={social.instagram} target="_blank" className="text-body fs-4" title="Instagram">
 						<BsInstagram />
 					</a>
 				)}
 				{social.youtube && (
-					<a href={social.youtube} target="_blank" className="text-dark fs-4" title="YouTube">
+					<a href={social.youtube} target="_blank" className="text-body fs-4" title="YouTube">
 						<BsYoutube />
 					</a>
 				)}
@@ -123,7 +123,7 @@ const FooterNavItem = ({ item, level = 0 }) => {
 		<li className={`${level > 1 ? 'ms-3' : ''} mb-2`}>
 			<a
 				href={item.href || '#'}
-				className={`text-decoration-none text-dark hover-primary d-flex align-items-start gap-2 ${level === 1 ? 'small' : 'x-small text-muted'}`}
+				className={`text-decoration-none text-body hover-primary d-flex align-items-start gap-2 ${level === 1 ? 'small' : 'x-small text-body-secondary'}`}
 			>
 				{item.icon && <Icon name={item.icon} size={14} className="mt-1" />}
 				<span>{item.title}</span>
@@ -178,7 +178,7 @@ const Footer = ({ nav, contact: propContact }) => {
 											</small>
 											<a
 												href={`tel:${contact.tel.replace(/[^\d\+]+/g, '')}`}
-												className="fs-3 fw-bold text-decoration-none text-dark d-flex align-items-center gap-3"
+												className="fs-3 fw-bold text-decoration-none text-body d-flex align-items-center gap-3"
 											>
 												<BsTelephone className="text-primary" /> {contact.tel}
 											</a>

@@ -14,7 +14,7 @@ export const Sidebar = ({ items = [], title, className = '' }) => {
 							<BsNav.Link
 								key={cIdx}
 								href={child.url || '#'}
-								className={child.active ? 'fw-bold text-primary active py-1' : 'text-dark py-1'}
+								className={child.active ? 'fw-bold text-primary active py-1' : 'text-body py-1'}
 							>
 								{child.label || child.title}
 							</BsNav.Link>
@@ -27,7 +27,7 @@ export const Sidebar = ({ items = [], title, className = '' }) => {
 			<BsNav.Item key={idx}>
 				<BsNav.Link
 					href={link.url || '#'}
-					className={link.active ? 'fw-bold text-primary active' : 'text-dark fw-medium'}
+					className={link.active ? 'fw-bold text-primary active' : 'text-body fw-medium'}
 				>
 					{link.label || link.title}
 				</BsNav.Link>

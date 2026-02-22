@@ -15,7 +15,7 @@ export function Accordion({ doc }) {
 	const accId = `accordion-${uid}`
 
 	return (
-		<section className="bg-light py-5">
+		<section className="bg-body-secondary py-5">
 			<div className="container container-max">
 				<div className="accordion accordion-flush" id={accId}>
 					{accordion.map((item, i) => {
@@ -42,7 +42,7 @@ export function Accordion({ doc }) {
 									data-bs-parent={`#${accId}`}
 								>
 									<div
-										className="accordion-body text-muted"
+										className="accordion-body text-body-secondary"
 										dangerouslySetInnerHTML={{ __html: item.a || item.content }}
 									/>
 								</div>

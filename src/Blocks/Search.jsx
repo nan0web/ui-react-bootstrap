@@ -37,10 +37,16 @@ export const Search = ({
 			} else if (index > 0) {
 				resultsRefs.current[index - 1]?.focus()
 			}
-		} else if ((e.key === 'Enter' || e.key === ' ') && index >= 0) {
+		} else if (e.key === 'Enter' && index >= 0) {
 			e.preventDefault()
-			const url = displayedResults[index].url
-			if (url) window.location.href = url
+			const el = resultsRefs.current[index]
+			if (el) {
+				const target =
+					el.querySelector('[data-action]') ||
+					el.querySelector('a[href]') ||
+					el.querySelector('button')
+				if (target) target.click()
+			}
 		}
 	}
 
@@ -183,7 +189,7 @@ export const Search = ({
 											const isLast = idx === result.path.length - 1
 											return (
 												<li
-													className={`breadcrumb-item ${isLast ? 'active fw-medium text-dark' : ''}`}
+													className={`breadcrumb-item ${isLast ? 'active fw-medium text-body' : ''}`}
 													key={idx}
 												>
 													{crumb.url ? (

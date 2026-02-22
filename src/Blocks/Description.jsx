@@ -11,9 +11,12 @@ export function Description({ doc }) {
 	if (!desc) return null
 
 	return (
-		<section className="bg-light py-5 text-center text-md-start">
+		<section className="bg-body-secondary py-5 text-center text-md-start">
 			<div className="container container-max">
-				<h2 className="lead fs-3 m-0 text-muted" dangerouslySetInnerHTML={{ __html: desc }} />
+				<h2
+					className="lead fs-3 m-0 text-body-secondary"
+					dangerouslySetInnerHTML={{ __html: desc }}
+				/>
 			</div>
 		</section>
 	)

@@ -35,6 +35,6 @@ describe('Sidebar component', () => {
 
 		const inactiveItem = getByText('Profile')
 		expect(inactiveItem).not.toHaveClass('active')
-		expect(inactiveItem).toHaveClass('text-dark')
+		expect(inactiveItem).toHaveClass('text-body')
 	})
 })

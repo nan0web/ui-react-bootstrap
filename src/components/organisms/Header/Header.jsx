@@ -219,7 +219,7 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 
 							<Button
 								variant="link"
-								className="p-0 text-dark search-btn"
+								className="p-0 text-body search-btn"
 								onClick={() => setShowSearch(true)}
 							>
 								<BsSearch size={24} />
@@ -279,7 +279,7 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 										<p className="small text-muted mb-2">{item.city}</p>
 										<div className="mt-auto border-top pt-2">
 											{item.phones?.map((p, i) => (
-												<div key={i} className="small text-dark">
+												<div key={i} className="small text-body">
 													📞 {p}
 												</div>
 											))}

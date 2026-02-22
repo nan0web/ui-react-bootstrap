@@ -11,7 +11,7 @@ export function Features({ doc, ...sharedProps }) {
 	if (!features || !Array.isArray(features) || features.length === 0) return null
 
 	return (
-		<section className="bg-light bg-gradient py-5">
+		<section className="bg-body-secondary bg-gradient py-5">
 			<div className="container container-max">
 				<div className="row g-4">
 					{features.map((item, i) => (
@@ -19,7 +19,7 @@ export function Features({ doc, ...sharedProps }) {
 							<div className="text-success fs-4">
 								<i className="icon-check-circle-o" />
 							</div>
-							<div className="fs-5 mt-1 text-muted">
+							<div className="fs-5 mt-1 text-body-secondary">
 								{typeof item === 'string' ? item : renderItem(item, i, sharedProps)}
 							</div>
 						</div>
