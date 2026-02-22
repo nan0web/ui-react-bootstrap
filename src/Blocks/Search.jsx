@@ -19,6 +19,31 @@ export const Search = ({
 	const [indexLoaded, setIndexLoaded] = useState(initialLocalIndex.length > 0)
 	const [loading, setLoading] = useState(false)
 
+	const inputRef = React.useRef(null)
+	const resultsRefs = React.useRef([])
+
+	const handleKeyDown = (e, index) => {
+		if (e.key === 'ArrowDown') {
+			e.preventDefault()
+			if (index === -1) {
+				resultsRefs.current[0]?.focus()
+			} else if (index < displayedResults.length - 1) {
+				resultsRefs.current[index + 1]?.focus()
+			}
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault()
+			if (index === 0) {
+				inputRef.current?.focus()
+			} else if (index > 0) {
+				resultsRefs.current[index - 1]?.focus()
+			}
+		} else if ((e.key === 'Enter' || e.key === ' ') && index >= 0) {
+			e.preventDefault()
+			const url = displayedResults[index].url
+			if (url) window.location.href = url
+		}
+	}
+
 	// Fetch index on focus if index is a URL
 	const handleFocus = async () => {
 		if (typeof index === 'string' && !indexLoaded && !loading) {
@@ -103,6 +128,8 @@ export const Search = ({
 					value={query}
 					onChange={handleSearchChange}
 					onFocus={handleFocus}
+					onKeyDown={(e) => handleKeyDown(e, -1)}
+					ref={inputRef}
 					className="form-control-lg border-primary shadow-none"
 				/>
 				<Button
@@ -135,6 +162,10 @@ export const Search = ({
 						key={index}
 						className="mb-3 border-0 shadow-sm hover-shadow transition"
 						as="article"
+						tabIndex={0}
+						ref={(el) => (resultsRefs.current[index] = el)}
+						onKeyDown={(e) => handleKeyDown(e, index)}
+						style={{ outlineColor: 'var(--bs-primary)' }}
 					>
 						{result.img && (
 							<Card.Img

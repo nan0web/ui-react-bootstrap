@@ -116,8 +116,8 @@ export default function Playground({ db }) {
 
 	return (
 		<div
-			className="d-flex flex-column flex-md-row"
-			style={{ minHeight: '100vh', backgroundColor: '#eef2f6', paddingBottom: '70px' }}
+			className="d-flex flex-column flex-md-row bg-body-tertiary"
+			style={{ minHeight: '100vh', paddingBottom: '70px' }}
 		>
 			{/* Sidebar Navigation - Desktop only */}
 			<nav
@@ -133,7 +133,7 @@ export default function Playground({ db }) {
 						{blocks.map((b) => (
 							<li className="nav-item" key={b}>
 								<a
-									className="nav-link text-dark fw-medium rounded p-2"
+									className="nav-link text-body fw-medium rounded p-2"
 									href={'#block-' + b.toLowerCase()}
 								>
 									{b}
@@ -156,7 +156,7 @@ export default function Playground({ db }) {
 					{blocks.map((b) => (
 						<li className="nav-item" key={b}>
 							<a
-								className="nav-link text-dark px-3 py-2"
+								className="nav-link text-body px-3 py-2"
 								style={{ borderRadius: '20px' }}
 								href={'#block-' + b.toLowerCase()}
 							>
