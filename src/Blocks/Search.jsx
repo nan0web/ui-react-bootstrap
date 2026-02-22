@@ -22,6 +22,17 @@ export const Search = ({
 	const inputRef = React.useRef(null)
 	const resultsRefs = React.useRef([])
 
+	const flashCard = (el) => {
+		if (!el) return
+		el.style.transition = 'box-shadow 0.15s ease, transform 0.15s ease'
+		el.style.boxShadow = '0 0 0 3px var(--bs-primary)'
+		el.style.transform = 'scale(0.98)'
+		setTimeout(() => {
+			el.style.boxShadow = ''
+			el.style.transform = ''
+		}, 200)
+	}
+
 	const handleKeyDown = (e, index) => {
 		if (e.key === 'ArrowDown') {
 			e.preventDefault()
@@ -41,6 +52,7 @@ export const Search = ({
 			e.preventDefault()
 			const el = resultsRefs.current[index]
 			if (el) {
+				flashCard(el)
 				const target =
 					el.querySelector('[data-action]') ||
 					el.querySelector('a[href]') ||
@@ -169,9 +181,15 @@ export const Search = ({
 						className="mb-3 border-0 shadow-sm hover-shadow transition"
 						as="article"
 						tabIndex={0}
+						role="button"
 						ref={(el) => (resultsRefs.current[index] = el)}
 						onKeyDown={(e) => handleKeyDown(e, index)}
-						style={{ outlineColor: 'var(--bs-primary)' }}
+						onClick={() => flashCard(resultsRefs.current[index])}
+						style={{
+							outlineColor: 'var(--bs-primary)',
+							cursor: 'pointer',
+							transition: 'box-shadow 0.15s ease, transform 0.15s ease',
+						}}
 					>
 						{result.img && (
 							<Card.Img
