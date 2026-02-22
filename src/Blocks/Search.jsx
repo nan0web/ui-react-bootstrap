@@ -74,6 +74,24 @@ export const Search = ({
 	const isSearching = !!query.trim()
 	const resultCount = displayedResults.length
 
+	const HighlightText = ({ text, query }) => {
+		if (!query || !text) return text
+		const parts = text.split(new RegExp(`(${query})`, 'gi'))
+		return (
+			<>
+				{parts.map((part, i) =>
+					part.toLowerCase() === query.toLowerCase() ? (
+						<mark key={i} className="bg-warning text-dark p-0">
+							{part}
+						</mark>
+					) : (
+						<span key={i}>{part}</span>
+					),
+				)}
+			</>
+		)
+	}
+
 	const searchContent = (
 		<div className="search-body w-100">
 			<Form className="input-group mb-4" onSubmit={handleSubmit}>
@@ -152,11 +170,13 @@ export const Search = ({
 							)}
 							<Card.Title>
 								<a href={result.url || '#'} className="text-decoration-none text-primary">
-									{result.title}
+									<HighlightText text={result.title} query={query} />
 								</a>
 							</Card.Title>
 							{result.desc && (
-								<Card.Text className="text-muted small mb-2">{result.desc}</Card.Text>
+								<Card.Text className="text-muted small mb-2">
+									<HighlightText text={result.desc} query={query} />
+								</Card.Text>
 							)}
 							{result.url && !result.buttonHidden && (
 								<Button href={result.url} variant="outline-primary" size="sm" className="mt-2">

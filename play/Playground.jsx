@@ -121,7 +121,7 @@ export default function Playground({ db }) {
 		>
 			{/* Sidebar Navigation - Desktop only */}
 			<nav
-				className="col-md-3 col-lg-2 bg-white shadow-sm sidebar sticky-top d-none d-md-block"
+				className="col-md-3 col-lg-2 bg-body shadow-sm sidebar sticky-top d-none d-md-block"
 				style={{ top: 0, height: '100vh', overflowY: 'auto' }}
 			>
 				<div className="p-4 border-bottom">
@@ -146,7 +146,7 @@ export default function Playground({ db }) {
 
 			{/* Bottom Navigation - Mobile only */}
 			<nav
-				className="d-md-none fixed-bottom bg-white border-top shadow-lg"
+				className="d-md-none fixed-bottom bg-body border-top shadow-lg"
 				style={{ zIndex: 1050, overflowX: 'auto', whiteSpace: 'nowrap' }}
 			>
 				<ul
@@ -170,7 +170,7 @@ export default function Playground({ db }) {
 			{/* Main Content */}
 			<div className="col-md-9 col-lg-10">
 				{/* Top Header */}
-				<div className="bg-white shadow-sm border-bottom py-3 px-3 px-md-4 mb-5 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+				<div className="bg-body shadow-sm border-bottom py-3 px-3 px-md-4 mb-5 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
 					<div>
 						<h1 className="fw-bold mb-0 h3">Каталог Блоків OLMUI</h1>
 						<p className="text-muted small mb-0 mt-1">
