@@ -13,6 +13,7 @@ import { ThemeToggle } from './ThemeToggle.jsx'
 import { LangSelect } from './LangSelect.jsx'
 import { Nav } from './Nav.jsx'
 import { Sidebar } from './Sidebar.jsx'
+import { Page } from './Page.jsx'
 
 export const Blocks = {
 	Description,
@@ -30,4 +31,5 @@ export const Blocks = {
 	LangSelect,
 	Nav,
 	Sidebar,
+	Page,
 }

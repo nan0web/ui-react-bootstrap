@@ -15,6 +15,10 @@ const getBlockMap = () => ({
 	Files: Blocks.Files,
 	Price: Blocks.Price,
 	Contract: Blocks.Contract,
+	Nav: Blocks.Nav,
+	Sidebar: Blocks.Sidebar,
+	Callout: Blocks.Callout,
+	Markdown: Blocks.Markdown,
 })
 
 /**
@@ -38,7 +42,7 @@ export function layoutToContent(layout) {
 	if (l === 'contract') return ['Description', 'Contract']
 
 	// Sections page: description + content
-	if (l === 'sections') return ['Description', 'Content']
+	if (l === 'sections') return ['Description', 'Sidebar', 'Content']
 
 	// Posts listing / news archive
 	if (l === 'posts') return [{ Blog: true }]

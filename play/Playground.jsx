@@ -1,6 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Renderer, Blocks } from '../src/index.jsx'
+import Header from '../src/components/organisms/Header/Header.jsx'
+import { HeaderStyles } from '../src/components/organisms/Header/HeaderStyles.js'
+import Autocomplete from '../src/components/atoms/Autocomplete.jsx'
+import TreeView from '../src/components/atoms/TreeView.jsx'
+import Button from '../src/components/atoms/Button.jsx'
+import Typography from '../src/components/atoms/Typography.jsx'
+import { OlmuiInspector } from './components/OlmuiInspector.jsx'
 import yaml from 'js-yaml'
+import { Offcanvas } from 'react-bootstrap'
 
 function Example({ label, children, jsxCode, yamlCode }) {
 	const formattedYaml = yamlCode
@@ -67,9 +75,24 @@ function Example({ label, children, jsxCode, yamlCode }) {
 }
 
 function BlockSection({ id, title, description, children }) {
+	const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+	const isolate = params?.get('isolate')
+
+	if (isolate && isolate !== id) return null
+
 	return (
 		<div id={id} className="mb-5 pb-5 border-bottom">
-			<h2 className="mb-2 text-primary">📦 {title}</h2>
+			<div className="d-flex align-items-center mb-2 gap-3">
+				<h2 className="mb-0 text-primary">📦 {title}</h2>
+				<a
+					href={'?isolate=' + id}
+					target="_blank"
+					className="btn btn-sm btn-outline-secondary"
+					title="Відкрити ізольовано в новому вікні"
+				>
+					🔗
+				</a>
+			</div>
 			{description && <p className="text-muted mb-4">{description}</p>}
 			{children}
 		</div>
@@ -78,6 +101,42 @@ function BlockSection({ id, title, description, children }) {
 
 export default function Playground({ db }) {
 	const [locale, setLocale] = useState('uk')
+	const [showSidebar, setShowSidebar] = useState(false)
+	const [sidebarVisible, setSidebarVisible] = useState(() => {
+		if (typeof window !== 'undefined') {
+			return !new URLSearchParams(window.location.search).get('isolate')
+		}
+		return true
+	})
+	const [activeBlock, setActiveBlock] = useState('')
+
+	useEffect(() => {
+		const handleHashChange = () => setActiveBlock(window.location.hash)
+		window.addEventListener('hashchange', handleHashChange)
+		handleHashChange() // Initial check
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						setActiveBlock('#' + entry.target.id)
+						if (window.history.replaceState) {
+							window.history.replaceState(null, null, '#' + entry.target.id)
+						}
+					}
+				}
+			},
+			{ rootMargin: '-10% 0px -80% 0px', threshold: 0 },
+		)
+
+		const blockEls = document.querySelectorAll('[id^="block-"]')
+		blockEls.forEach((el) => observer.observe(el))
+
+		return () => {
+			window.removeEventListener('hashchange', handleHashChange)
+			observer.disconnect()
+		}
+	}, [])
 	const [theme, setTheme] = useState(
 		typeof document !== 'undefined'
 			? document.documentElement.getAttribute('data-bs-theme') || 'light'
@@ -98,6 +157,7 @@ export default function Playground({ db }) {
 
 	const blocks = [
 		'Nav',
+		'Header',
 		'Sidebar',
 		'Callout',
 		'Markdown',
@@ -112,6 +172,9 @@ export default function Playground({ db }) {
 		'Price',
 		'Contract',
 		'Search',
+		'Autocomplete',
+		'TreeView',
+		'Button',
 	]
 
 	return (
@@ -120,62 +183,87 @@ export default function Playground({ db }) {
 			style={{ minHeight: '100vh', paddingBottom: '70px' }}
 		>
 			{/* Sidebar Navigation - Desktop only */}
-			<nav
-				className="col-md-3 col-lg-2 bg-body shadow-sm sidebar sticky-top d-none d-md-block"
-				style={{ top: 0, height: '100vh', overflowY: 'auto' }}
-			>
-				<div className="p-4 border-bottom">
-					<h5 className="fw-bold mb-0">Каталог OLMUI</h5>
-					<p className="small text-muted mb-0 mt-1">@nan0web/ui-react-bootstrap</p>
-				</div>
-				<div className="p-3">
-					<ul className="nav flex-column gap-1">
-						{blocks.map((b) => (
-							<li className="nav-item" key={b}>
-								<a
-									className="nav-link text-body fw-medium rounded p-2"
-									href={'#block-' + b.toLowerCase()}
-								>
-									{b}
-								</a>
-							</li>
-						))}
-					</ul>
-				</div>
-			</nav>
-
-			{/* Bottom Navigation - Mobile only */}
-			<nav
-				className="d-md-none fixed-bottom bg-body border-top shadow-lg"
-				style={{ zIndex: 1050, overflowX: 'auto', whiteSpace: 'nowrap' }}
-			>
-				<ul
-					className="nav nav-pills p-2 flex-nowrap align-items-center"
-					style={{ overflowX: 'auto' }}
+			{sidebarVisible && (
+				<nav
+					className="col-md-3 col-lg-2 bg-body shadow-sm sidebar sticky-top d-none d-md-block"
+					style={{ top: 0, height: '100vh', overflowY: 'auto' }}
 				>
-					{blocks.map((b) => (
-						<li className="nav-item" key={b}>
-							<a
-								className="nav-link text-body px-3 py-2"
-								style={{ borderRadius: '20px' }}
-								href={'#block-' + b.toLowerCase()}
-							>
-								{b}
-							</a>
-						</li>
-					))}
-				</ul>
-			</nav>
+					<div className="p-4 border-bottom">
+						<h5 className="fw-bold mb-0">Каталог OLMUI</h5>
+						<p className="small text-muted mb-0 mt-1">@nan0web/ui-react-bootstrap</p>
+						<div className="mt-3">
+							<Blocks.ThemeToggle theme={theme} onToggle={handleThemeToggle} />
+						</div>
+					</div>
+					<div className="p-3">
+						<ul className="nav flex-column gap-1">
+							{blocks.map((b) => (
+								<li className="nav-item" key={b}>
+									<a
+										className={`nav-link fw-medium rounded p-2 ${activeBlock === '#block-' + b.toLowerCase() ? 'bg-primary text-white' : 'text-body'}`}
+										href={'#block-' + b.toLowerCase()}
+									>
+										{b}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				</nav>
+			)}
+
+			{/* Mobile Sidebar (Offcanvas) */}
+			<Offcanvas
+				show={showSidebar}
+				onHide={() => setShowSidebar(false)}
+				placement="start"
+				className="bg-body-tertiary"
+			>
+				<Offcanvas.Header closeButton className="border-bottom">
+					<Offcanvas.Title>Каталог OLMUI</Offcanvas.Title>
+				</Offcanvas.Header>
+				<Offcanvas.Body className="p-0">
+					<div className="p-4 border-bottom">
+						<Blocks.ThemeToggle theme={theme} onToggle={handleThemeToggle} />
+					</div>
+					<div className="p-3">
+						<ul className="nav flex-column gap-1">
+							{blocks.map((b) => (
+								<li className="nav-item" key={b}>
+									<a
+										className={`nav-link fw-medium rounded p-2 ${activeBlock === '#block-' + b.toLowerCase() ? 'bg-primary text-white' : 'text-body'}`}
+										href={'#block-' + b.toLowerCase()}
+										onClick={() => setShowSidebar(false)}
+									>
+										{b}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				</Offcanvas.Body>
+			</Offcanvas>
 
 			{/* Main Content */}
-			<div className="col-md-9 col-lg-10">
+			<div className={sidebarVisible ? 'col-md-9 col-lg-10' : 'col-12'}>
 				{/* Top Header */}
 				<div className="bg-body shadow-sm border-bottom py-3 px-3 px-md-4 mb-5 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
-					<div>
-						<h1 className="fw-bold mb-0 h3">Каталог Блоків OLMUI</h1>
-						<p className="text-muted small mb-0 mt-1">
-							Інтерактивна Пісочниця: <code>Renderer</code>, та <code>Blocks.*</code>.
-						</p>
+					<div className="d-flex align-items-center gap-3">
+						<button className="btn btn-light border d-md-none" onClick={() => setShowSidebar(true)}>
+							☰ Меню
+						</button>
+						<button
+							className="btn btn-light border d-none d-md-block"
+							onClick={() => setSidebarVisible((v) => !v)}
+						>
+							{sidebarVisible ? 'Сховати меню' : 'Показати меню'}
+						</button>
+						<div>
+							<h1 className="fw-bold mb-0 h3">Каталог Блоків OLMUI</h1>
+							<p className="text-muted small mb-0 mt-1">
+								Інтерактивна Пісочниця: <code>Renderer</code>, та <code>Blocks.*</code>.
+							</p>
+						</div>
 					</div>
 					<button className="btn btn-outline-primary fw-bold px-4 shadow-sm" onClick={toggleLocale}>
 						{locale === 'uk' ? '🇺🇦 UK → EN' : '🇬🇧 EN → UK'}
@@ -189,7 +277,7 @@ export default function Playground({ db }) {
 
 					<BlockSection id="block-nav" title="Blocks.Nav" description="Верхня навігація (Navbar).">
 						<Example
-							label="Головна навігація"
+							label="Проста навігація (3 пункти)"
 							jsxCode={`<Blocks.Nav \n  brand={{ title: "Bank Shell", url: "#" }} \n  items={[\n    { title: "Головна", url: "#" },\n    { title: "Про нас", url: "#" },\n    { title: "Послуги", children: [{ title: "Депозити" }, { title: "Кредити" }] }\n  ]} \n/>`}
 							yamlCode={{
 								$content: ['Nav'],
@@ -216,13 +304,172 @@ export default function Playground({ db }) {
 								]}
 							/>
 						</Example>
-						<Example
-							label="Тільки Логотип (Без меню)"
-							jsxCode={`<Blocks.Nav brand={{ title: "Simple Logo", url: "#" }} items={[]} />`}
-							yamlCode={{ $content: ['Nav'], brand: { title: 'Simple Logo', url: '#' }, items: [] }}
-						>
+						<Example label="Тільки Логотип (Без меню)">
 							<Blocks.Nav brand={{ title: 'Simple Logo', url: '#' }} items={[]} />
 						</Example>
+					</BlockSection>
+
+					{/* ═══════════════════════════════════════════════════ */}
+					{/*  HEADER (Full Component — Bank-like Structure)     */}
+					{/* ═══════════════════════════════════════════════════ */}
+					<BlockSection
+						id="block-header"
+						title="Header (Organism)"
+						description="Повноцінний Header з багаторівневою навігацією, пошуком, мовою та кнопкою входу. Тестування CSS Custom Properties та всіх станів: hover, active, overlap, arrow ▼."
+					>
+						{(() => {
+							const bankNav = [
+								{
+									title: locale === 'uk' ? 'Приватним клієнтам' : 'Personal',
+									href: '/private/',
+									children: [
+										{
+											title: locale === 'uk' ? 'Картки' : 'Cards',
+											href: '/private/cards/',
+											children: [
+												{
+													title: locale === 'uk' ? 'Зарплатні' : 'Payroll',
+													href: '/private/cards/payroll',
+												},
+												{
+													title: locale === 'uk' ? 'Кредитні' : 'Credit',
+													href: '/private/cards/credit',
+												},
+												{ title: 'Premium', href: '/private/cards/premium' },
+											],
+										},
+										{
+											title: locale === 'uk' ? 'Депозити' : 'Deposits',
+											href: '/private/deposits/',
+										},
+										{ title: locale === 'uk' ? 'Кредити' : 'Credits', href: '/private/credits/' },
+										{
+											title: locale === 'uk' ? 'Перекази' : 'Transfers',
+											href: '/private/transfers/',
+											children: [
+												{
+													title: locale === 'uk' ? 'З картки на картку' : 'Card to Card',
+													href: '/private/transfers/c2c',
+												},
+												{ title: 'Western Union', href: '/private/transfers/western-union' },
+											],
+										},
+										{ title: locale === 'uk' ? 'Метали' : 'Metals', href: '/private/metals/' },
+									],
+								},
+								{
+									title: locale === 'uk' ? 'Малому бізнесу' : 'Small Business',
+									href: '/business/small/',
+									children: [
+										{
+											title: locale === 'uk' ? 'Розрахунки (РКО)' : 'Payments (RKO)',
+											href: '/business/small/rko/',
+										},
+										{
+											title: locale === 'uk' ? 'Депозити' : 'Deposits',
+											href: '/business/small/deposits/',
+										},
+										{
+											title: locale === 'uk' ? 'Фінансування' : 'Financing',
+											href: '/business/small/financing/',
+										},
+										{
+											title: locale === 'uk' ? 'Зарплатний проєкт' : 'Payroll Project',
+											href: '/business/small/payroll/',
+										},
+									],
+								},
+								{
+									title: locale === 'uk' ? 'Корпоративним клієнтам' : 'Corporate',
+									href: '/business/corporate/',
+									children: [
+										{
+											title: locale === 'uk' ? 'Розрахунки' : 'Payments',
+											href: '/business/corporate/payments/',
+										},
+										{
+											title: locale === 'uk' ? 'Депозити' : 'Deposits',
+											href: '/business/corporate/deposits/',
+										},
+										{
+											title: locale === 'uk' ? 'Кредити' : 'Credits',
+											href: '/business/corporate/credits/',
+										},
+										{
+											title: locale === 'uk' ? 'Інші послуги' : 'Other Services',
+											href: '/business/corporate/other/',
+											children: [
+												{
+													title: locale === 'uk' ? 'Еквайрінг' : 'Acquiring',
+													href: '/business/corporate/other/acquiring',
+												},
+												{
+													title: locale === 'uk' ? 'Інкасація' : 'Collection',
+													href: '/business/corporate/other/collection',
+												},
+											],
+										},
+									],
+								},
+								{
+									title: locale === 'uk' ? 'Фінансовим установам' : 'Institutions',
+									href: '/business/institute/',
+									children: [
+										{
+											title: locale === 'uk' ? 'Операції на міжбанку' : 'Interbank Ops',
+											href: '/business/institute/interbank',
+										},
+										{
+											title: locale === 'uk' ? 'Послуги' : 'Services',
+											href: '/business/institute/services',
+										},
+									],
+								},
+								{
+									title: locale === 'uk' ? 'Банк' : 'About',
+									href: '/about/',
+									children: [
+										{ title: locale === 'uk' ? 'Про банк' : 'About Us', href: '/about/info' },
+										{ title: locale === 'uk' ? 'Новини' : 'News', href: '/about/news' },
+										{ title: locale === 'uk' ? 'Звітність' : 'Reports', href: '/about/reports' },
+										{
+											title: locale === 'uk' ? 'Відділення та банкомати' : 'Branches & ATMs',
+											href: '/about/branches',
+										},
+										{ title: locale === 'uk' ? 'Вакансії' : 'Careers', href: '/about/careers' },
+									],
+								},
+								{
+									title: locale === 'uk' ? 'Контакти' : 'Contacts',
+									href: '/contacts/',
+								},
+								{
+									title: locale === 'uk' ? 'Ліцензія' : 'License',
+									href: '/license/',
+								},
+							]
+							return (
+								<>
+									<Example
+										label="Банківська навігація (3 рівні + OLMUI Inspector)"
+										jsxCode={`import Header from './components/organisms/Header/Header'
+import { OlmuiInspector } from './components/OlmuiInspector'
+
+<OlmuiInspector model={Header.cssModel}>
+	<Header nav={{ items: bankNav }} title="ІНДУСТРІАЛБАНК" />
+</OlmuiInspector>`}
+										yamlCode={{
+											$note: 'Повна 3-рівнева структура навігації банку',
+											nav: bankNav,
+										}}
+									>
+										<OlmuiInspector StylesClass={HeaderStyles}>
+											<Header nav={{ items: bankNav }} title="Додаток банку" $logo={false} />
+										</OlmuiInspector>
+									</Example>
+								</>
+							)
+						})()}
 					</BlockSection>
 
 					<BlockSection
@@ -1003,7 +1250,7 @@ export default function Playground({ db }) {
 						description="Універсальний рядок пошуку та результати. Завантажує індекс та фільтрує миттєво."
 					>
 						<Example
-							label="Миттєвий локальний пошук (з 12+ елементів)"
+							label="Миттєвий локальний пошук (наприклад: 'депозит', 'авто', 'кредит')"
 							jsxCode={`<Blocks.Search \n  inline={true} \n  index={searchIndexData} \n/>`}
 							yamlCode={{
 								$content: ['Search'],
@@ -1134,6 +1381,74 @@ export default function Playground({ db }) {
 									},
 								]}
 							/>
+						</Example>
+					</BlockSection>
+
+					{/* Additional Sandbox-Migrated Elements */}
+					<BlockSection
+						id="block-autocomplete"
+						title="Autocomplete"
+						description="Мультиселект поле з пошуком"
+					>
+						<Example
+							label="Стандартний"
+							jsxCode={`import { Autocomplete } from '@nan0web/ui-react-bootstrap/src/index.jsx'\n\n<Autocomplete \n  options={['Apple', 'Banana', 'Cherry']} \n  placeholder="Шукати фрукти..."\n/>`}
+							yamlCode={{
+								autocomplete: { options: ['Apple', 'Banana', 'Cherry'], placeholder: 'Search...' },
+							}}
+						>
+							<div style={{ maxWidth: 400 }}>
+								<Autocomplete
+									options={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
+									placeholder={locale === 'uk' ? 'Шукати фрукти...' : 'Search fruits...'}
+								/>
+							</div>
+						</Example>
+					</BlockSection>
+
+					<BlockSection
+						id="block-treeview"
+						title="TreeView"
+						description="Деревовидна структура файлів або директорій"
+					>
+						<Example
+							label="Файлове дерево"
+							jsxCode={`import { TreeView } from '@nan0web/ui-react-bootstrap/src/index.jsx'\n\n<TreeView data={[\n  { name: 'src', type: 'dir', children: [\n    { name: 'App.js', type: 'file' }\n  ]}\n]}/>`}
+							yamlCode={{
+								tree: [{ name: 'src', type: 'dir', children: [{ name: 'App.js', type: 'file' }] }],
+							}}
+						>
+							<div className="bg-body p-3 rounded border" style={{ maxWidth: 400 }}>
+								<TreeView
+									data={[
+										{
+											name: 'src',
+											type: 'dir',
+											children: [
+												{ name: 'App.js', type: 'file' },
+												{ name: 'index.jsx', type: 'file' },
+											],
+										},
+										{ name: 'package.json', type: 'file' },
+									]}
+									mode="file"
+								/>
+							</div>
+						</Example>
+					</BlockSection>
+
+					<BlockSection id="block-button" title="Button" description="Базові елементи взаємодії">
+						<Example
+							label="Кнопки"
+							jsxCode={`<Button variant="primary">Кнопка</Button>`}
+							yamlCode={{ Button: 'Кнопка', $variant: 'primary' }}
+						>
+							<div className="d-flex gap-2 mb-3">
+								<Button variant="primary">Primary</Button>
+								<Button variant="secondary">Secondary</Button>
+								<Button variant="success">Success</Button>
+								<Button variant="danger">Danger</Button>
+							</div>
 						</Example>
 					</BlockSection>
 				</div>

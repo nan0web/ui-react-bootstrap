@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Navbar, Container, Nav, Dropdown, Modal, Button, Form } from 'react-bootstrap'
 import { useUI } from '@nan0web/ui-react'
 import { BsSearch } from 'react-icons/bs'
+import { useHeaderNav } from './useHeaderNav.js'
 import './Header.v2.scss'
 
 const NavItemRenderer = ({ item, level = 0, index, activePath, onToggle }) => {
@@ -123,7 +124,7 @@ const NavItemRenderer = ({ item, level = 0, index, activePath, onToggle }) => {
 
 const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 	const { document, t, db } = useUI()
-	const [activePath, setActivePath] = useState([])
+	const { activePath, handleToggle } = useHeaderNav([])
 	const [showSearch, setShowSearch] = useState(false)
 	const [showDuty, setShowDuty] = useState(false)
 	const [dutyData, setDutyData] = useState([])
@@ -133,11 +134,13 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 			? nav.items || nav.children
 			: document?.nav?.items || document?.nav?.children) || []
 	const logoUrl =
-		(propLogo || document?.$logo || document?.logo)?.wide ||
-		(propLogo || document?.$logo || document?.logo)?.square ||
-		document?.logo ||
-		'/img/logo-uk.svg'
-	const title = propTitle || document?.title || 'Industrialbank'
+		propLogo === false
+			? false
+			: (propLogo || document?.$logo || document?.logo)?.wide ||
+				(propLogo || document?.$logo || document?.logo)?.square ||
+				document?.logo ||
+				'/img/logo-uk.svg'
+	const title = propTitle || document?.title || 'Банк'
 
 	useEffect(() => {
 		if (offices === 'duty' && db) {
@@ -147,32 +150,17 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 		}
 	}, [offices, db])
 
-	const handleToggle = (id, level) => {
-		setActivePath((prev) => {
-			if (prev.includes(id)) {
-				return prev.filter((p) => {
-					const pLevel = parseInt(p.split('-')[0])
-					return pLevel < level
-				})
-			} else {
-				const newPath = prev.filter((p) => {
-					const pLevel = parseInt(p.split('-')[0])
-					return pLevel < level
-				})
-				return [...newPath, id]
-			}
-		})
-	}
-
 	return (
 		<header className="root sticky-top">
 			<Navbar expand="xl" className="navbar px-0">
 				<Container>
 					<Navbar.Brand href="/" className="me-4 logo-brand">
-						<img src={logoUrl} height="55" className="d-inline-block align-top" alt={title} />
+						{logoUrl ? (
+							<img src={logoUrl} height="55" className="d-inline-block align-top" alt={title} />
+						) : (
+							<span className="fs-4 fw-bold">{title}</span>
+						)}
 					</Navbar.Brand>
-
-					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 
 					<Navbar.Collapse id="basic-navbar-nav">
 						<ul className="navbar-nav main-nav">
@@ -186,46 +174,68 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 								/>
 							))}
 						</ul>
-
-						<div className="d-flex align-items-center gap-3 ms-xl-auto right-nav">
-							<Dropdown align="end" className="lang">
-								<Dropdown.Toggle variant="link" className="p-0 border-0">
-									<div className="lang-bubble shadow-sm">🇺🇦</div>
-								</Dropdown.Toggle>
-								<Dropdown.Menu className="shadow border-0">
-									<Dropdown.Item active>Українська</Dropdown.Item>
-									<Dropdown.Item>English</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-
-							<Dropdown align="end" className="signin">
-								<Dropdown.Toggle
-									variant="outline-primary"
-									id="dropdown-signin"
-									className="px-3 rounded-pill fw-bold border-2"
-								>
-									{t('Вхід')}
-								</Dropdown.Toggle>
-
-								<Dropdown.Menu className="dropdown-menu-end shadow-lg border-0 mt-2">
-									<Dropdown.Item href="https://ibank.ua/private" className="py-2">
-										{t('Приватним особам')}
-									</Dropdown.Item>
-									<Dropdown.Item href="https://ibank.ua/business" className="py-2">
-										{t('Бізнесу')}
-									</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-
-							<Button
-								variant="link"
-								className="p-0 text-body search-btn"
-								onClick={() => setShowSearch(true)}
-							>
-								<BsSearch size={24} />
-							</Button>
-						</div>
 					</Navbar.Collapse>
+
+					{/* Right Nav Options — visible on all screens */}
+					<div className="d-flex align-items-center gap-2 gap-md-3 ms-auto right-nav">
+						{/* 1. Меню (Hamburger) */}
+						<Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0 p-1" />
+
+						{/* 2. Мова */}
+						<Dropdown align="end" className="lang">
+							<Dropdown.Toggle variant="link" className="p-0 border-0 text-decoration-none">
+								<div
+									className="lang-bubble shadow-sm"
+									style={{
+										width: '32px',
+										height: '32px',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										borderRadius: '50%',
+										background: 'var(--bs-primary)',
+										color: '#fff',
+										fontSize: '0.8rem',
+									}}
+								>
+									UK
+								</div>
+							</Dropdown.Toggle>
+							<Dropdown.Menu className="shadow border-0">
+								<Dropdown.Item active>Українська</Dropdown.Item>
+								<Dropdown.Item>English</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown>
+
+						{/* 3. Пошук */}
+						<Button
+							variant="link"
+							className="p-1 text-body search-btn"
+							onClick={() => setShowSearch(true)}
+						>
+							<BsSearch size={20} />
+						</Button>
+
+						{/* 4. Вхід */}
+						<Dropdown align="end" className="signin">
+							<Dropdown.Toggle
+								variant="outline-primary"
+								id="dropdown-signin"
+								className="rounded-pill fw-bold border-2 btn-sm d-flex align-items-center"
+							>
+								{t('Вхід')}
+							</Dropdown.Toggle>
+
+							<Dropdown.Menu className="dropdown-menu-end shadow-lg border-0 mt-2">
+								<Dropdown.Item href="https://ibank.ua/private" className="py-2">
+									{t('Приватним особам')}
+								</Dropdown.Item>
+								<Dropdown.Item href="https://ibank.ua/business" className="py-2">
+									{t('Бізнесу')}
+								</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown>
+					</div>
 				</Container>
 			</Navbar>
 

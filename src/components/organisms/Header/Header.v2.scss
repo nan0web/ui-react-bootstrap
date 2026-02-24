@@ -1,16 +1,20 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
 
 header.root {
-	background-color: $white;
+	background-color: var(--header-bg, #{$white});
 	position: relative;
-	z-index: 1000;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	z-index: var(--header-z-index, 1000);
+	box-shadow: var(--header-shadow, 0 2px 10px rgba(0, 0, 0, 0.05));
 
 	.navbar {
-		min-height: 85px;
+		min-height: var(--header-nav-height, 85px);
 		padding: 0;
+	}
+
+	.logo-brand {
+		color: var(--header-nav-link-color, #{$dark});
 	}
 
 	ul.navbar-nav.main-nav {
@@ -18,30 +22,34 @@ header.root {
 		justify-content: space-around;
 		order: 1;
 
-		>li {
-			>a {
-				text-transform: uppercase;
-				font-weight: 700;
-				color: $dark !important;
-				padding: 1.8rem 0.5rem;
-				font-size: 0.9rem;
-				letter-spacing: 0.5px;
+		> li {
+			> a {
+				text-transform: var(--header-nav-link-transform, uppercase);
+				font-weight: var(--header-nav-link-weight, 700);
+				color: var(--header-nav-link-color, #{$dark}) !important;
+				padding: var(--header-nav-link-padding-y, 0.8rem) var(--header-nav-link-padding-x, 0.5rem);
+				font-size: var(--header-nav-link-size, 0.9rem);
+				letter-spacing: var(--header-nav-link-spacing, 0.5px);
 
 				&:hover,
 				&.show,
 				&.active {
-					color: $primary !important;
+					color: var(--header-active-color, #{$primary}) !important;
 				}
 
-				&.dropdown-toggle::after {
-					display: inline-block !important;
-					margin-left: 0.5rem;
-					vertical-align: middle;
-					content: "";
-					border-top: 0.35rem solid;
-					border-right: 0.35rem solid transparent;
-					border-bottom: 0;
-					border-left: 0.35rem solid transparent;
+				&.dropdown-toggle {
+					white-space: var(--header-1st-level-wrap, nowrap) !important;
+
+					&::after {
+						display: inline-block !important;
+						margin-left: 0.5rem;
+						vertical-align: middle;
+						content: '';
+						border-top: var(--header-caret-size, 0.35rem) solid;
+						border-right: var(--header-caret-size, 0.35rem) solid transparent;
+						border-bottom: 0;
+						border-left: var(--header-caret-size, 0.35rem) solid transparent;
+					}
 				}
 			}
 		}
@@ -57,20 +65,20 @@ header.root {
 		}
 
 		.lang-bubble {
-			width: 2.8rem;
-			height: 2.8rem;
+			width: var(--header-lang-size, 2.8rem);
+			height: var(--header-lang-size, 2.8rem);
 			border-radius: 50%;
-			background: #fff;
+			background: var(--header-lang-bg, #{$white});
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-size: 1.4rem;
-			border: 1px solid #dee2e6;
+			font-size: var(--header-lang-icon-size, 1.4rem);
+			border: var(--header-lang-border, 1px solid #dee2e6);
 			transition: all 0.2s;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+			box-shadow: var(--header-lang-shadow, 0 2px 5px rgba(0, 0, 0, 0.05));
 
 			&:hover {
-				border-color: $primary;
+				border-color: var(--header-active-color, #{$primary});
 				transform: translateY(-2px);
 				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 			}
@@ -81,77 +89,227 @@ header.root {
 		order: 3;
 
 		.btn-outline-primary {
-			border-color: $primary;
-			color: $primary;
-			border-radius: 50px;
-			padding: 0.6rem 1.8rem;
-			font-weight: 700;
-			border-width: 2px;
+			border-color: var(--header-active-color, #{$primary});
+			color: var(--header-active-color, #{$primary});
+			border-radius: var(--header-btn-radius, 50px);
+			padding: var(--header-btn-padding, 0.6rem 1.8rem);
+			font-weight: var(--header-btn-weight, 700);
+			border-width: var(--header-btn-border-width, 2px);
 
 			&:hover {
-				background-color: $primary;
+				background-color: var(--header-active-color, #{$primary});
 				color: $white;
 			}
 		}
 	}
 
 	.search-btn {
-		color: $dark;
+		color: var(--header-nav-link-color, #{$dark});
 		order: 4;
 
 		&:hover {
-			color: $primary;
+			color: var(--header-active-color, #{$primary});
 		}
 	}
 }
 
-// 2nd level horizontal bar customization
+// ═══════════════════════════════════════════════════════════════════════
+// 2nd level horizontal bar — DESKTOP (xl+)
+// This is the SINGLE SOURCE OF TRUTH for header structure.
+// Themes only override via --header-* CSS Custom Properties.
+// ═══════════════════════════════════════════════════════════════════════
 @include media-breakpoint-up(xl) {
 	header.root {
-		padding-bottom: 45px; // Room for the blue bar
+		padding-bottom: var(--header-subnav-height, 45px);
 
 		nav.navbar {
 			position: relative;
 
+			// Blue subnav bar (full-width pseudo-element)
 			&::after {
 				position: absolute;
 				content: '';
-				left: -100vw;
-				top: 85px; // Exactly at the bottom of 85px navbar
-				height: 45px;
-				width: 300vw;
-				background-color: $primary;
+				left: 0;
+				top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
+				height: var(--header-subnav-height, 45px);
+				width: 100%;
+				background-color: var(--header-subnav-bg, #{$primary});
 				z-index: -1;
 			}
 		}
 
-		// Horizontal bar items (level 1)
+		// ═══ 1st level nav items ═══════════════════════════════════════
+		ul.navbar-nav {
+			> li {
+				> .nav-link {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					height: var(--header-nav-height, 85px);
+					padding-top: 0;
+					padding-bottom: 0;
+					border-bottom: var(--header-active-line-width, 3px) solid transparent; // Ensures a visible, uniform active line
+
+					&.show {
+						color: var(--header-active-color, #{$primary});
+						border-bottom-color: var(--header-active-color, #{$primary});
+					}
+				}
+
+				// Arrow ▼ for .show (click)
+				> a.dropdown-toggle.show {
+					position: relative;
+
+					&::before {
+						content: '';
+						position: absolute;
+						top: 100%;
+						left: 50%;
+						border-left: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-right: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-top: var(--header-active-arrow-size, 0.5rem) solid var(--header-active-color, #{$primary});
+						transform: translateX(-50%);
+						pointer-events: none;
+					}
+				}
+
+				// Arrow ▼ for .active (activePath — programmatic)
+				&.active > a.dropdown-toggle {
+					position: relative;
+					color: var(--header-active-color, #{$primary});
+					border-bottom-color: var(--header-active-color, #{$primary});
+
+					&::before {
+						content: '';
+						position: absolute;
+						top: 100%;
+						left: 50%;
+						border-left: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-right: var(--header-active-arrow-size, 0.5rem) solid transparent;
+						border-top: var(--header-active-arrow-size, 0.5rem) solid var(--header-active-color, #{$primary});
+						transform: translateX(-50%);
+						pointer-events: none;
+					}
+				}
+
+				// Adjust the dropdown position for the right-most elements
+				// so they grow towards left instead of overflowing right off screen
+				&:nth-last-child(-n+3) {
+					> ul {
+						left: auto;
+						right: 0;
+					}
+				}
+
+				// ═══ 2nd level (subnav items on blue bar) ══════════════
+				> ul {
+					position: absolute;
+					left: 0;
+					right: 0;
+					top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
+					height: var(--header-subnav-height, 45px);
+					min-width: min-content;
+					width: auto;
+					padding: 0;
+					box-shadow: none;
+					color: $white;
+					background-color: transparent;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: center;
+					display: none !important;
+
+					// Prevent flicker from Bootstrap transitions
+					&.dropdown-menu {
+						transition: none !important;
+					}
+
+					&.show {
+						display: flex !important;
+						margin-top: $dropdown-spacer;
+					}
+
+					> li {
+						display: flex;
+						align-items: stretch;
+						height: var(--header-subnav-height, 45px);
+						padding: 0;
+						white-space: var(--header-1st-level-subnav-wrap, nowrap);
+
+						> a {
+							display: flex;
+							align-items: center;
+							padding: 0 1rem;
+							height: 100%;
+							white-space: var(--header-1st-level-subnav-wrap, nowrap);
+							--bs-dropdown-item-padding-y: 0;
+
+							&:hover,
+							&:focus {
+								transition: background-color 0.3s ease;
+							}
+						}
+
+						// Active 2nd-level item
+						> a.active,
+						&.active > a {
+							background-color: var(
+								--header-subnav-active-bg,
+								rgba(255, 255, 255, 0.22)
+							) !important;
+							color: var(--header-subnav-active-color, #{$white}) !important;
+							font-weight: var(--header-subnav-active-weight, bold) !important;
+							border-radius: var(--header-subnav-active-radius, 0.25rem);
+						}
+					}
+				}
+
+				// Auto-show subnav when section is active via activePath
+				&.active > ul.dropdown-menu {
+					display: flex !important;
+					margin-top: 0;
+				}
+			}
+
+			// Overlap fix: hide auto-active subnav when user opens another dropdown
+			&:has(> li > ul.show) > li.active > ul.dropdown-menu:not(.show) {
+				display: none !important;
+			}
+		}
+
+		// Horizontal bar items (level 1) — legacy .start class support
 		.dropdown-menu.start {
 			position: absolute;
 			left: 0;
-			top: 85px; // Attached to navbar bottom
+			top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
 			width: 100%;
 			background: transparent;
 			border: none;
 			box-shadow: none;
 			padding: 0;
 			margin: 0;
+			overflow-x: clip;
+			overflow-y: visible;
 			display: none !important;
 
 			&.show {
 				display: flex !important;
 				justify-content: center;
 				align-items: center;
-				height: 45px;
+				height: var(--header-subnav-height, 45px);
 				gap: 2.5rem;
 				z-index: 100;
 			}
 
 			.nav-item {
 				.nav-link {
-					color: $white !important;
-					font-size: 0.95rem;
-					font-weight: 600;
+					display: flex;
+					align-items: center;
+					height: 100%;
+					color: var(--header-subnav-link-color, #{$white}) !important;
+					font-size: var(--header-subnav-link-size, 0.95rem);
+					font-weight: var(--header-subnav-link-weight, 600);
+					white-space: var(--header-2nd-level-wrap, nowrap);
 					padding: 0;
 					text-transform: none;
 					background: transparent;
@@ -161,7 +319,7 @@ header.root {
 					&.active {
 						text-decoration: underline;
 						background: transparent;
-						color: $white !important;
+						color: var(--header-subnav-link-active-color, #{$white}) !important;
 					}
 				}
 			}
@@ -170,12 +328,12 @@ header.root {
 		// Vertical sub-menus (Level 2+)
 		ul.dropdown-menu.sub-menu {
 			position: absolute;
-			top: 45px; // Attached to blue bar bottom
+			top: var(--header-subnav-height, 45px);
 			left: 0;
 			flex-direction: column;
-			background-color: darken($primary, 5%);
-			min-width: 20rem;
-			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+			background-color: var(--header-dropdown-bg, darken($primary, 5%));
+			min-width: var(--header-dropdown-min-width, 20rem);
+			box-shadow: var(--header-dropdown-shadow, 0 15px 35px rgba(0, 0, 0, 0.2));
 			display: none;
 			z-index: 1001;
 			padding: 0.5rem 0;
@@ -187,15 +345,16 @@ header.root {
 
 			.dropdown-item {
 				text-align: left;
-				padding: 0.8rem 1.5rem;
-				color: $white !important;
-				font-size: 0.95rem;
+				padding: var(--header-dropdown-item-padding, 0.8rem 1.5rem);
+				color: var(--header-dropdown-text-color, #{$white}) !important;
+				font-size: var(--header-dropdown-text-size, 0.95rem);
+				white-space: var(--header-3rd-level-wrap, nowrap);
 				border: none;
 				transition: background 0.2s;
 
 				&:hover {
-					background-color: rgba($white, 0.1) !important;
-					color: $white !important;
+					background-color: var(--header-dropdown-hover-bg, rgba(255, 255, 255, 0.1)) !important;
+					color: var(--header-dropdown-hover-color, #{$white}) !important;
 				}
 			}
 
@@ -205,7 +364,7 @@ header.root {
 					display: inline-block;
 					margin-left: auto;
 					vertical-align: middle;
-					content: "";
+					content: '';
 					border-top: 0.3em solid;
 					border-right: 0.3em solid transparent;
 					border-left: 0.3em solid transparent;

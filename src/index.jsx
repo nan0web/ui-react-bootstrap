@@ -34,6 +34,7 @@ import Heading from './components/molecules/Heading/Heading.jsx'
 import Accordion from './components/molecules/Accordion/Accordion.jsx'
 import Blog from './components/molecules/Blog/Blog.jsx'
 import Contacts from './components/molecules/Contacts/Contacts.jsx'
+import { SortableList } from './components/SortableList.jsx'
 
 // Extend core components with Bootstrap
 /** @type {Map<string, React.ComponentType<any>>} */
@@ -92,6 +93,7 @@ export {
 	Accordion,
 	Blog,
 	Contacts,
+	SortableList,
 }
 export { iconMap } from './components/atoms/Icon/Icon.jsx'
 
