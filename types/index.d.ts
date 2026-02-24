@@ -41,5 +41,6 @@ import Heading from './components/molecules/Heading/Heading.jsx';
 import Accordion from './components/molecules/Accordion/Accordion.jsx';
 import Blog from './components/molecules/Blog/Blog.jsx';
 import Contacts from './components/molecules/Contacts/Contacts.jsx';
-export { UIReact, useUI, UIProvider, UIContextValue, tokens, Element, Theme, BootstrapTheme, Button, Input, Typography, Card, Modal, TreeView, Autocomplete, Header, Footer, Promo, Telephone, Email, Address, Icon, Loading, Heading, Accordion, Blog, Contacts };
+import { SortableList } from './components/SortableList.jsx';
+export { UIReact, useUI, UIProvider, UIContextValue, tokens, Element, Theme, BootstrapTheme, Button, Input, Typography, Card, Modal, TreeView, Autocomplete, Header, Footer, Promo, Telephone, Email, Address, Icon, Loading, Heading, Accordion, Blog, Contacts, SortableList };
 export { Renderer, renderItem, layoutToContent } from "./renderItem.jsx";

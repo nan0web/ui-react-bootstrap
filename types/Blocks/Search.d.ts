@@ -1,9 +1,10 @@
-export function Search({ show, inline, onClose, results, query, onSearch, t, ...props }: {
+export function Search({ show, inline, onClose, results, index, query: initialQuery, onSearch, t, ...props }: {
     [x: string]: any;
     show?: boolean;
     inline?: boolean;
     onClose: any;
     results?: any[];
+    index?: any;
     query?: string;
     onSearch: any;
     t?: (k: any) => any;

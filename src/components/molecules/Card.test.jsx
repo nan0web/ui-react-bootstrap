@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import { act } from 'react'
 import Card from './Card.jsx'
 

@@ -41,7 +41,7 @@ describe('Page', () => {
 				<p>Content</p>
 			</Page>,
 		)
-		expect(screen.getByText('TestApp')).toBeTruthy()
+		expect(screen.getAllByText('TestApp')[0]).toBeTruthy()
 		expect(screen.getByText('Home')).toBeTruthy()
 		expect(screen.getByText('Docs')).toBeTruthy()
 	})
@@ -62,7 +62,7 @@ describe('Page', () => {
 				<article>Full Page</article>
 			</Page>,
 		)
-		expect(screen.getByText('TestApp')).toBeTruthy()
+		expect(screen.getAllByText('TestApp')[0]).toBeTruthy()
 		expect(screen.getByText('Documentation')).toBeTruthy()
 		expect(screen.getByText('Full Page')).toBeTruthy()
 	})

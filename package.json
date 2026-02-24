@@ -8,12 +8,8 @@
 	"files": [
 		"src/",
 		"types/",
-		"play/",
-		"data/",
-		"public/",
-		".datasets/",
-		"CHANGELOG.md",
-		"scripts/"
+		"docs/",
+		"CHANGELOG.md"
 	],
 	"scripts": {
 		"build": "tsc",
@@ -28,7 +24,9 @@
 		"test:e2e": "npx playwright test",
 		"play": "vite --port 4247",
 		"precommit": "npm test",
-		"prepublishOnly": "npm test && npm run build && npm run build-data"
+		"knip": "knip --production",
+		"test:all": "npm test && npm run build && npm run test:e2e && npm run knip",
+		"prepublishOnly": "npm test && npm run build"
 	},
 	"peerDependencies": {
 		"@nan0web/core": "^1.0.0",
@@ -46,15 +44,16 @@
 		"@nan0web/log": "link:../log",
 		"@nan0web/test": "link:../test",
 		"@nan0web/ui-react": "link:../ui-react",
+		"@playwright/test": "^1.50.1",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^14.6.1",
-		"@playwright/test": "^1.50.1",
 		"@vitejs/plugin-react": "^5.0.4",
 		"@vitest/coverage-v8": "^3.2.4",
 		"@vitest/ui": "^1.6.1",
 		"bootstrap": "^5.3.8",
 		"js-yaml": "^4.1.0",
+		"knip": "^5.85.0",
 		"react-bootstrap": "^2.10.10",
 		"sass": "^1.93.2",
 		"typescript": "^5.9.3",

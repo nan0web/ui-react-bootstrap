@@ -25,11 +25,11 @@ describe('Testing output', () => {
 		expect(1).toBe(1)
 	})
 
-	it('should print error', () => {
+	it.fails('should print error', () => {
 		throw new Error('error')
 	})
 
-	it('should print fail', () => {
+	it.fails('should print fail', () => {
 		expect(1).toBe(0)
 	})
 

@@ -88,5 +88,3 @@ export const SortableList = ({
 }
 
 SortableList.displayName = 'SortableList'
-
-export default SortableList
