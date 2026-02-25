@@ -1,12 +1,19 @@
 import React from 'react'
 import { Alert } from 'react-bootstrap'
+import { reactIcon } from '@nan0web/icons/adapters/react'
 import {
-	FaInfoCircle,
-	FaExclamationTriangle,
-	FaExclamationCircle,
-	FaCheckCircle,
-	FaLightbulb,
-} from 'react-icons/fa'
+	FaInfoCircle as _FaInfoCircle,
+	FaExclamationTriangle as _FaExclamationTriangle,
+	FaExclamationCircle as _FaExclamationCircle,
+	FaCheckCircle as _FaCheckCircle,
+	FaLightbulb as _FaLightbulb,
+} from '@nan0web/icons/fa'
+
+const FaInfoCircle = reactIcon(_FaInfoCircle)
+const FaExclamationTriangle = reactIcon(_FaExclamationTriangle)
+const FaExclamationCircle = reactIcon(_FaExclamationCircle)
+const FaCheckCircle = reactIcon(_FaCheckCircle)
+const FaLightbulb = reactIcon(_FaLightbulb)
 
 export const Callout = ({ type = 'info', title, content, children, className = '' }) => {
 	let variant = 'info'

@@ -1,14 +1,22 @@
 import React from 'react'
 import { useUI } from '@nan0web/ui-react'
 import { Container, Row, Col } from 'react-bootstrap'
+import { reactIcon } from '@nan0web/icons/adapters/react'
 import {
-	BsTelegram,
-	BsFacebook,
-	BsInstagram,
-	BsYoutube,
-	BsTelephone,
-	BsEnvelopeAt,
-} from 'react-icons/bs'
+	BsTelegram as _BsTelegram,
+	BsFacebook as _BsFacebook,
+	BsInstagram as _BsInstagram,
+	BsYoutube as _BsYoutube,
+	BsTelephone as _BsTelephone,
+	BsEnvelopeAt as _BsEnvelopeAt,
+} from '@nan0web/icons/bs'
+
+const BsTelegram = reactIcon(_BsTelegram)
+const BsFacebook = reactIcon(_BsFacebook)
+const BsInstagram = reactIcon(_BsInstagram)
+const BsYoutube = reactIcon(_BsYoutube)
+const BsTelephone = reactIcon(_BsTelephone)
+const BsEnvelopeAt = reactIcon(_BsEnvelopeAt)
 import Icon from '../../atoms/Icon/Icon'
 import './Footer.v2.scss'
 import './Nav.v2.scss'

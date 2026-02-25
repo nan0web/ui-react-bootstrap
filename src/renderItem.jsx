@@ -51,10 +51,11 @@ export function layoutToContent(layout) {
 	if (l === 'post') return ['Content']
 
 	// Product catalog (good/deposits, good/credits, good/landing)
-	if (l.startsWith('good/')) return ['Description', 'Excerpt', 'Content', 'Files']
+	if (l.startsWith('good/'))
+		return ['Description', 'Excerpt', 'Products.Showcase', 'Content', 'Files']
 
 	// Products listing
-	if (l === 'products') return ['Description', 'Content', 'Files']
+	if (l === 'products') return ['Description', 'Products.Showcase', 'Content', 'Files']
 
 	// People (management)
 	if (l === 'people') return ['Content']
@@ -303,14 +304,23 @@ export function renderItem(item, index, sharedProps, registry = {}) {
 	// External Registry Components (e.g. Blog, Promo, Apps.List)
 	if (registry[key] && !key.startsWith('App.')) {
 		const InternalComponent = registry[key]
-		return (
-			<InternalComponent
-				key={index}
-				// Support dynamic passing of properties from item node
-				node={value === true ? sharedProps.doc?.[key.toLowerCase()] : item}
-				{...sharedProps}
-			/>
-		)
+		// When value is `true` and item has no extra non-$ keys, resolve node from doc
+		const hasExtraKeys = Object.keys(item).filter((k) => !k.startsWith('$') && k !== key).length > 0
+		const baseNode =
+			value === true && !hasExtraKeys ? sharedProps.doc?.[key.toLowerCase()] || item : item
+
+		// Always merge $-prefixed properties from the YAML item into node
+		// so components receive config like $class, $value, $variant via node.$xxx
+		const dollarProps = {}
+		for (const [k, v] of Object.entries(item)) {
+			if (k.startsWith('$') && k !== '$clear') dollarProps[k] = v
+		}
+		const nodeValue =
+			Object.keys(dollarProps).length > 0 && typeof baseNode === 'object' && baseNode !== null
+				? { ...baseNode, ...dollarProps }
+				: baseNode
+
+		return <InternalComponent key={index} node={nodeValue} {...sharedProps} />
 	}
 
 	// App Registry: App.X = full app, App.X.Y = widget

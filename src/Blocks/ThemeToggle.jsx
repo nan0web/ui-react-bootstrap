@@ -1,6 +1,9 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import { FaSun, FaMoon } from 'react-icons/fa'
+import { reactIcon } from '@nan0web/icons/adapters/react'
+import { FaSun as _FaSun, FaMoon as _FaMoon } from '@nan0web/icons/fa'
+const FaSun = reactIcon(_FaSun)
+const FaMoon = reactIcon(_FaMoon)
 
 export const ThemeToggle = ({ theme = 'light', onToggle, className = '' }) => {
 	const isDark = theme === 'dark'

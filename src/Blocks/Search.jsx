@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Modal, Form, Button, Badge, Card } from 'react-bootstrap'
-import { FaSearch } from 'react-icons/fa'
+import { reactIcon } from '@nan0web/icons/adapters/react'
+import { FaSearch as _FaSearch } from '@nan0web/icons/fa'
+const FaSearch = reactIcon(_FaSearch)
 
 export const Search = ({
 	show = false,

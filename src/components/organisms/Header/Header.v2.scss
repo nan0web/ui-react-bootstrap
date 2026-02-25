@@ -25,7 +25,7 @@ header.root {
 		> li {
 			> a {
 				text-transform: var(--header-nav-link-transform, uppercase);
-				font-weight: var(--header-nav-link-weight, 700);
+				font-weight: var(--header-nav-link-weight, normal);
 				color: var(--header-nav-link-color, #{$dark}) !important;
 				padding: var(--header-nav-link-padding-y, 0.8rem) var(--header-nav-link-padding-x, 0.5rem);
 				font-size: var(--header-nav-link-size, 0.9rem);
@@ -41,14 +41,7 @@ header.root {
 					white-space: var(--header-1st-level-wrap, nowrap) !important;
 
 					&::after {
-						display: inline-block !important;
-						margin-left: 0.5rem;
-						vertical-align: middle;
-						content: '';
-						border-top: var(--header-caret-size, 0.35rem) solid;
-						border-right: var(--header-caret-size, 0.35rem) solid transparent;
-						border-bottom: 0;
-						border-left: var(--header-caret-size, 0.35rem) solid transparent;
+						display: none !important;
 					}
 				}
 			}
@@ -140,7 +133,17 @@ header.root {
 
 		// ═══ 1st level nav items ═══════════════════════════════════════
 		ul.navbar-nav {
+			// When any menu is opened, remove active highlight from the page's current active item
+			&:has(> li > a.show) {
+				> li.active:not(:has(> a.show)) > a {
+					border-bottom-color: transparent !important;
+					color: var(--header-nav-link-color, #{$dark}) !important;
+					&::before { display: none !important; }
+				}
+			}
+
 			> li {
+				position: relative;
 				> .nav-link {
 					display: flex;
 					align-items: center;
@@ -192,20 +195,11 @@ header.root {
 					}
 				}
 
-				// Adjust the dropdown position for the right-most elements
-				// so they grow towards left instead of overflowing right off screen
-				&:nth-last-child(-n+3) {
-					> ul {
-						left: auto;
-						right: 0;
-					}
-				}
+
 
 				// ═══ 2nd level (subnav items on blue bar) ══════════════
 				> ul {
 					position: absolute;
-					left: 0;
-					right: 0;
 					top: calc(var(--header-nav-height, 85px) + var(--header-subnav-offset, 0px));
 					height: var(--header-subnav-height, 45px);
 					min-width: min-content;
@@ -215,7 +209,7 @@ header.root {
 					color: $white;
 					background-color: transparent;
 					flex-direction: row;
-					justify-content: flex-start;
+					justify-content: center;
 					align-items: center;
 					display: none !important;
 

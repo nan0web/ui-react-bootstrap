@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Navbar, Container, Nav, Dropdown, Modal, Button, Form } from 'react-bootstrap'
 import { useUI } from '@nan0web/ui-react'
-import { BsSearch } from 'react-icons/bs'
+import { reactIcon } from '@nan0web/icons/adapters/react'
+import { BsSearch as _BsSearch } from '@nan0web/icons/bs'
+const BsSearch = reactIcon(_BsSearch)
 import { useHeaderNav } from './useHeaderNav.js'
 import './Header.v2.scss'
 

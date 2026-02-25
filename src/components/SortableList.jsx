@@ -1,6 +1,9 @@
 import React from 'react'
 import { ListGroup, Button, Badge } from 'react-bootstrap'
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa'
+import { reactIcon } from '@nan0web/icons/adapters/react'
+import { FaArrowUp as _FaArrowUp, FaArrowDown as _FaArrowDown } from '@nan0web/icons/fa'
+const FaArrowUp = reactIcon(_FaArrowUp)
+const FaArrowDown = reactIcon(_FaArrowDown)
 import { useSortableList } from '@nan0web/ui-react'
 
 /**
