@@ -335,3 +335,17 @@ via a schema class (Model as Schema pattern).
 - **Export Modal**: Copy-to-clipboard with CSS Variables or JSON format toggle
 - **onUpdate prop**: External state integration callback for Share App / db-browser
 - **localStorage persistence**: State saved per StylesClass name
+
+---
+
+## 🚨 Оптимізація та Zero Hardcode (Від credits)
+
+**Target**: `src/components/organisms/Header`, `src/components/molecules/Blog`, `play/Playground.jsx`
+**Status**: DONE
+**Date**: 2026-03-10
+
+**Problem**:
+Згідно з архітектурними принципами (Model-as-Schema, Zero Hardcode, Data-Driven UI):
+
+1. В таких компонентах як `Header` або `Blog` були зашиті "fallback" URL-шляхи для логотипів (наприклад, `/img/logo.png` чи `/img/logo-uk.svg`). Всі подібні активи повинні надходити виключно через `props` або схему (`data`), інакше додатки без цих файлів отримують 404 руйнуючи UI. Вимагається прибрати внутрішній хардкод банківських активів з універсального пакету `ui-react-bootstrap`.
+2. Playground повинен споживати виключно оброблені дані у форматі JSON (`Data-Driven UI`), а не сирі YAML файли (бо фронтенд не має залежати від `js-yaml` в production/dev серверах). Це було частково адаптовано, але треба уникати регресії та підтримувати fallback для `parseComponentYaml` у тестах (якщо треба). Оновити архітектуру.

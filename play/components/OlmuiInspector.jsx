@@ -1038,10 +1038,8 @@ export function OlmuiInspector({ StylesClass, children, onUpdate }) {
 									{section}
 								</summary>
 								<div
-									className="p-3 bg-body"
+									className="p-3 bg-body d-flex flex-wrap"
 									style={{
-										display: 'grid',
-										gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
 										gap: '1rem',
 										alignItems: 'center',
 									}}
@@ -1058,8 +1056,13 @@ export function OlmuiInspector({ StylesClass, children, onUpdate }) {
 										return (
 											<div
 												key={key}
-												className="d-flex align-items-center w-100"
-												style={{ minHeight: '28px' }}
+												className="d-flex align-items-center"
+												style={{
+													minHeight: '28px',
+													flexBasis: '320px',
+													flexGrow: 1,
+													minWidth: '0',
+												}}
 											>
 												{controlType === 'switch' && (
 													<div className="form-check form-switch mb-0 d-flex gap-2">
