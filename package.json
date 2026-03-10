@@ -52,7 +52,6 @@
 		"@vitest/coverage-v8": "^3.2.4",
 		"@vitest/ui": "^1.6.1",
 		"bootstrap": "^5.3.8",
-		"js-yaml": "^4.1.0",
 		"knip": "^5.85.0",
 		"react-bootstrap": "^2.10.10",
 		"sass": "^1.93.2",
@@ -61,10 +60,10 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@nan0web/icons": "workspace:*",
 		"@nan0web/ui-core": "link:../ui-core",
 		"@nan0web/ui-react": "link:../ui-react",
 		"@react-input/mask": "^2.0.4",
-		"@nan0web/icons": "workspace:*",
 		"react-router": "^7.12.0",
 		"react-router-dom": "^7.12.0"
 	},

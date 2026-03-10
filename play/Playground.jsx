@@ -7,13 +7,11 @@ import TreeView from '../src/components/atoms/TreeView.jsx'
 import Button from '../src/components/atoms/Button.jsx'
 import Typography from '../src/components/atoms/Typography.jsx'
 import { OlmuiInspector } from './components/OlmuiInspector.jsx'
-import yaml from 'js-yaml'
 import { Offcanvas } from 'react-bootstrap'
 
-function Example({ label, children, jsxCode, yamlCode }) {
-	const formattedYaml = yamlCode
-		? yaml.dump(yamlCode, { indent: 2, noRefs: true, flowLevel: -1 })
-		: null
+function Example({ label, children, jsxCode, yamlCode, jsonCode }) {
+	const metaData = jsonCode || yamlCode
+	const formattedData = metaData ? JSON.stringify(metaData, null, 2) : null
 
 	return (
 		<div className="mb-4">
@@ -46,14 +44,14 @@ function Example({ label, children, jsxCode, yamlCode }) {
 						</div>
 					</div>
 				)}
-				{yamlCode && (
+				{metaData && (
 					<div className="col-12 col-xl-6">
 						<div className="card border-0 shadow-sm h-100">
 							<div
 								className="card-header bg-success text-white py-2 px-3 fw-bold"
 								style={{ fontSize: '0.8rem' }}
 							>
-								Meta Data (YAML)
+								Meta Data (JSON)
 							</div>
 							<div
 								className="card-body bg-dark p-3"
@@ -63,7 +61,7 @@ function Example({ label, children, jsxCode, yamlCode }) {
 									className="mb-0 text-white"
 									style={{ fontSize: '0.8rem', overflowX: 'auto', whiteSpace: 'pre-wrap' }}
 								>
-									{formattedYaml}
+									{formattedData}
 								</pre>
 							</div>
 						</div>

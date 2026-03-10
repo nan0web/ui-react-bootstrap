@@ -22,5 +22,10 @@ export default defineConfig({
 		globals: true,
 		include: ['src/**/*.test.jsx', 'playground/**/*.test.jsx', 'src/README.md.jsx'],
 		setupFiles: ['./vitest.setup.js'],
+		server: {
+			deps: {
+				inline: [/@nan0web/],
+			},
+		},
 	},
 })

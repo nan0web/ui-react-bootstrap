@@ -141,7 +141,7 @@ const Header = ({ nav, title: propTitle, $logo: propLogo, offices }) => {
 			: (propLogo || document?.$logo || document?.logo)?.wide ||
 				(propLogo || document?.$logo || document?.logo)?.square ||
 				document?.logo ||
-				'/img/logo-uk.svg'
+				null
 	const title = propTitle || document?.title || 'Банк'
 
 	useEffect(() => {

@@ -19,6 +19,20 @@ export default defineConfig({
 	globals: true,
 	environment: 'jsdom',
 	// root: './play',
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+				silenceDeprecations: [
+					'import',
+					'color-functions',
+					'legacy-js-api',
+					'global-builtin',
+					'if-function',
+				],
+			},
+		},
+	},
 	publicDir: 'public',
 	plugins: [
 		react(),

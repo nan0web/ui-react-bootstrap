@@ -13,14 +13,14 @@ test.describe('Catalog Playground E2E Tests', () => {
 		await expect(header).toBeVisible()
 	})
 
-	test('should display dual code blocks with JSX and YAML', async ({ page }) => {
+	test('should display dual code blocks with JSX and JSON', async ({ page }) => {
 		// Description block is present
 		const descBlock = page.locator('#block-description')
 		await expect(descBlock).toBeVisible()
 
-		// Check for JSX and YAML cards within the block
+		// Check for JSX and JSON cards within the block
 		await expect(descBlock.getByText('JSX').first()).toBeVisible()
-		await expect(descBlock.getByText('Meta Data (YAML)').first()).toBeVisible()
+		await expect(descBlock.getByText('Meta Data (JSON)').first()).toBeVisible()
 
 		// Ensure "doc" property is used instead of "page" in JSX code
 		await expect(descBlock.filter({ hasText: 'doc={{ description:' }).first()).toBeVisible()
