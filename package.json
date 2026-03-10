@@ -39,11 +39,11 @@
 		"react-router-dom": "^7.9.0"
 	},
 	"devDependencies": {
-		"@nan0web/core": "link:../core",
-		"@nan0web/db-browser": "link:../db-browser",
-		"@nan0web/log": "link:../log",
-		"@nan0web/test": "link:../test",
-		"@nan0web/ui-react": "link:../ui-react",
+		"@nan0web/core": "workspace:*",
+		"@nan0web/db-browser": "workspace:*",
+		"@nan0web/log": "workspace:*",
+		"@nan0web/test": "workspace:*",
+		"@nan0web/ui-react": "workspace:*",
 		"@playwright/test": "^1.50.1",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
@@ -61,8 +61,8 @@
 	},
 	"dependencies": {
 		"@nan0web/icons": "workspace:*",
-		"@nan0web/ui-core": "link:../ui-core",
-		"@nan0web/ui-react": "link:../ui-react",
+		"@nan0web/ui-core": "workspace:*",
+		"@nan0web/ui-react": "workspace:*",
 		"@react-input/mask": "^2.0.4",
 		"react-router": "^7.12.0",
 		"react-router-dom": "^7.12.0"
