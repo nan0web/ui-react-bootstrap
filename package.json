@@ -1,6 +1,6 @@
 {
 	"name": "@nan0web/ui-react-bootstrap",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"type": "module",
 	"description": "Bootstrap integration for @nan0web/ui-react – declarative UI with React Bootstrap components and themes.",
 	"main": "./src/index.jsx",
@@ -27,6 +27,7 @@
 		"test:status": "nan0test status --hide-name",
 		"test:coverage": "node --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/**/*.test.js\" \"src/**/*.test.js\"",
 		"test:release": "node --test \"releases/**/*.test.js\"",
+		"release:spec": "vitest run releases/**/*.{spec,test}.jsx releases/**/*.{spec,test}.js",
 		"test:e2e": "npx playwright test",
 		"play": "vite --port 4247",
 		"precommit": "npm test",
@@ -66,7 +67,6 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"@nan0web/icons": "workspace:*",
 		"@nan0web/ui-core": "workspace:*",
 		"@nan0web/ui-react": "workspace:*",
 		"@react-input/mask": "^2.0.4",

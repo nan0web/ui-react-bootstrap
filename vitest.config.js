@@ -20,7 +20,13 @@ export default defineConfig({
 			],
 		},
 		globals: true,
-		include: ['src/**/*.test.jsx', 'playground/**/*.test.jsx', 'src/README.md.jsx'],
+		include: [
+			'src/**/*.test.jsx',
+			'playground/**/*.test.jsx',
+			'src/README.md.jsx',
+			'releases/**/*.{spec,test}.jsx',
+			'releases/**/*.{spec,test}.js',
+		],
 		setupFiles: ['./vitest.setup.js'],
 		server: {
 			deps: {
